@@ -17,4 +17,19 @@ model User {
   password  String
   balance   Float
   avatarUrl String?
+
+  historics Historic[]
+}
+
+model Historic {
+  id          String   @id @default(uuid())
+  description String
+  value       Float
+  type        String // Tipo de Gasto Fixo/Variavel
+  isExit      Boolean // Marcação se é saida ou nao
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 }
