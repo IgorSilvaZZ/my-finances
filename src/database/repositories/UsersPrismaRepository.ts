@@ -33,4 +33,25 @@ export class UsersPrismaRepository implements UsersRepository {
 
     return user;
   }
+
+  async findById(id: string): Promise<UserPrisma | null> {
+    const user = await this.prismaService.user.findFirst({
+      where: { id },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  }
+
+  async updateBalance(id: string, balance: number): Promise<number> {
+    const updateBalanceUser = await this.prismaService.user.update({
+      where: { id },
+      data: { balance },
+    });
+
+    return updateBalanceUser.balance;
+  }
 }

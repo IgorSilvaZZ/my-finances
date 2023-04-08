@@ -33,4 +33,22 @@ export class UsersInMemoryRepository implements UsersRepository {
 
     return PrismaUserMapper.toPrisma(user);
   }
+
+  async findById(id: string): Promise<UserPrisma | null> {
+    const user = this.users.find((user) => user.id === id);
+
+    if (!user) {
+      return null;
+    }
+
+    return PrismaUserMapper.toPrisma(user);
+  }
+
+  async updateBalance(id: string, balance: number): Promise<number> {
+    const user = this.users.find((user) => user.id === id);
+
+    user.balance = balance;
+
+    return user.balance;
+  }
 }
