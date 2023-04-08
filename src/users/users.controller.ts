@@ -15,6 +15,7 @@ import { AuthenticateUserDTO } from './dtos/AuthenticateUserDTO';
 import { AuthenticateUserUseCase } from './useCases/AuthenticateUserUseCase';
 import { AuthGuard } from './guard/auth.guard';
 import { UpdateBalanceUseCase } from './useCases/UpdateBalanceUseCase';
+import { UpdateBalanceDTO } from './dtos/UpdateBalanceDTO';
 
 @Controller('/users')
 export class UsersController {
@@ -42,10 +43,13 @@ export class UsersController {
 
   @UseGuards(AuthGuard)
   @Patch('/updateBalance')
-  async updateBalance(@Request() request, @Body() balance: number) {
+  async updateBalance(
+    @Request() request,
+    @Body() updateBalanceDTO: UpdateBalanceDTO,
+  ) {
     const updatedBalance = await this.updateBalanceUseCase.execute({
-      idUser: request.idUser,
-      balance: balance,
+      idUser: request.userId,
+      balance: updateBalanceDTO.balance,
     });
 
     return {

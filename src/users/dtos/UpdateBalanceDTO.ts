@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 
 export interface UpdateBalanceDTO {
-  idUser: string;
+  idUser?: string;
   balance: number;
 }
