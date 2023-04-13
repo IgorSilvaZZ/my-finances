@@ -11,6 +11,14 @@ import { PrismaService } from '../database.service';
 export class HistoricPrismaRepository implements HistoricRepository {
   constructor(private prismaService: PrismaService) {}
 
+  async list(userId: string): Promise<HistoricPrisma[]> {
+    const historicList = await this.prismaService.historic.findMany({
+      where: { userId },
+    });
+
+    return historicList;
+  }
+
   async create(data: CreateHistoricDTO): Promise<HistoricPrisma> {
     const historic = await this.prismaService.historic.create({
       data,

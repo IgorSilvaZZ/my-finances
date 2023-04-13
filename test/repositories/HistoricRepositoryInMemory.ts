@@ -11,6 +11,14 @@ import { PrismaHistoricMapper } from '../../src/database/mappers/PrismaHistoricM
 export class HistoricRepositoryInMemory implements HistoricRepository {
   public historic: IHistoric[] = [];
 
+  async list(userId: string): Promise<HistoricPrisma[]> {
+    const historicListUser = this.historic.filter(
+      (historic) => historic.userId === userId,
+    );
+
+    return historicListUser.map(PrismaHistoricMapper.toPrisma);
+  }
+
   async create({
     description,
     value,
