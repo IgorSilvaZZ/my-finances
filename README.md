@@ -2,11 +2,11 @@
 
 Requisitos Funcionais
 
-- Adicionar Saldo mensal do usuario
-- Adicionar gastos do mes fixos e variaveis
-- Fazer contas parciais dos proximos meses do gastos fixos
-- Mostrar o extrato de gastos mensais
-- Gastos do dia caso o usuario queira
+- Adicionar gastos do usuario
+- Listar Historico de gastos
+- Atualizar saldo do usuario
+- Ordernar por tipo de gasto (entrada/saida)
+- Vizualizar os gastos de algum dia especifico
 
 Requisitos Nao Funcionais
 

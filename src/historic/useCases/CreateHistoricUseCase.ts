@@ -1,10 +1,12 @@
 /* eslint-disable prettier/prettier */
 
+import { Injectable, NotFoundException } from '@nestjs/common';
+
 import { CreateHistoricDTO } from '../dtos/CreateHistoricDTO';
 import { HistoricRepository } from '../repositories/HistoricRepository';
 import { UsersRepository } from '../../users/repositories/UsersRepository';
-import { NotFoundException } from '@nestjs/common';
 
+@Injectable()
 export class CreateHistoricUseCase {
   constructor(
     private historicRepository: HistoricRepository,

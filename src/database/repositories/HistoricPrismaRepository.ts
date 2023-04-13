@@ -1,0 +1,21 @@
+/* eslint-disable prettier/prettier */
+
+import { Injectable } from '@nestjs/common';
+import { Historic as HistoricPrisma } from '@prisma/client';
+
+import { CreateHistoricDTO } from '../../historic/dtos/CreateHistoricDTO';
+import { HistoricRepository } from '../../historic/repositories/HistoricRepository';
+import { PrismaService } from '../database.service';
+
+@Injectable()
+export class HistoricPrismaRepository implements HistoricRepository {
+  constructor(private prismaService: PrismaService) {}
+
+  async create(data: CreateHistoricDTO): Promise<HistoricPrisma> {
+    const historic = await this.prismaService.historic.create({
+      data,
+    });
+
+    return historic;
+  }
+}
