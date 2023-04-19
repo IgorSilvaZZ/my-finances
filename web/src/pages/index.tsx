@@ -1,8 +1,11 @@
+import { useRouter } from "next/router";
 import Image from "next/image";
 
-import loginImage from "../assets/handy-finance.gif";
+import loginImage from "../assets/handy-finance.png";
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <div className='flex items-center justify-center h-screen max-w-[1124px] mx-auto'>
       <main className='max-h-[600px] h-screen max-w-[1000px] w-screen rounded-xl bg-zinc-700 flex'>
@@ -36,13 +39,16 @@ export default function Home() {
 
             <span className='font-semibold text-gray-400 text-sm'>Ou</span>
 
-            <button className='py-3 w-60 bg-violet-800 text-white font-semibold rounded-xl transition-colors hover:bg-violet-900'>
+            <button
+              onClick={() => router.push("/register")}
+              className='py-3 w-60 bg-violet-800 text-white font-semibold rounded-xl transition-colors hover:bg-violet-900'
+            >
               Registrar-se
             </button>
           </section>
         </div>
         <div className='w-[500px] h-full flex items-center justify-center'>
-          <Image src={loginImage} alt='Login Image' className='w-96' />
+          <Image src={loginImage} alt='Login Image' className='w-80' />
         </div>
       </main>
     </div>
