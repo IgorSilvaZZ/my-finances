@@ -1,10 +1,76 @@
+import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { toast } from "react-toastify";
+import * as yup from "yup";
+
+import { api } from "../lib/axios";
 
 import loginImage from "../assets/handy-finance.png";
 
+interface UserFormLogin {
+  email: string;
+  password: string;
+}
+
 export default function Home() {
   const router = useRouter();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  } as UserFormLogin);
+
+  async function submitLogin(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const userSchema = yup.object({
+      email: yup
+        .string()
+        .email("Email invalido!")
+        .required("Informe um email!"),
+      password: yup.string().required("Informe uma senha!"),
+    });
+
+    try {
+      await userSchema.validate(formData, { abortEarly: false });
+
+      try {
+        const { data } = await api.post("/users/login", formData);
+
+        const token = data.token;
+
+        toast.success("Logado com sucesso!");
+      } catch (error: any) {
+        if (error.response) {
+          if (error.response.status === 400) {
+            return toast.error("Email ou Senha incorretos!");
+          } else if (error.response.status === 401) {
+            return toast.error("Email ou Senha incorretos!");
+          } else if (error.response.status === 500) {
+            return toast.error(
+              "Erro ao realizar login! Tente novemente em instantes!"
+            );
+          }
+        } else {
+          console.log("Error", error.message);
+        }
+      }
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        const [firstMessage] = error.inner;
+
+        return toast.error(String(firstMessage.message));
+      }
+    }
+  }
+
+  function handleFormData(event: React.FormEvent<HTMLInputElement>) {
+    setFormData({
+      ...formData,
+      [event.currentTarget.name]: event.currentTarget.value,
+    });
+  }
 
   return (
     <div className='flex items-center justify-center h-screen max-w-[1124px] mx-auto'>
@@ -22,20 +88,32 @@ export default function Home() {
               Seja bem vindo de volta que tal logar na sua conta!
             </span>
 
-            <input
-              type='text'
-              placeholder='Email'
-              className='flex-1 w-80 px-4 py-4 outline-none rounded-xl text-gray-300 bg-zinc-800 border border-zinc-600 font-semibold'
-            />
-            <input
-              type='password'
-              placeholder='Senha'
-              className='flex-1 w-80 px-4 py-4 outline-none rounded-xl text-gray-300 bg-zinc-800 border border-zinc-600 font-semibold'
-            />
+            <form
+              className='flex flex-col items-center justify-center gap-3'
+              onSubmit={submitLogin}
+            >
+              <input
+                type='text'
+                placeholder='Email'
+                name='email'
+                onChange={(e) => handleFormData(e)}
+                className='flex-1 w-80 px-4 py-4 outline-none rounded-xl text-gray-300 bg-zinc-800 border border-zinc-600 font-semibold'
+              />
+              <input
+                type='password'
+                placeholder='Senha'
+                name='password'
+                onChange={(e) => handleFormData(e)}
+                className='flex-1 w-80 px-4 py-4 outline-none rounded-xl text-gray-300 bg-zinc-800 border border-zinc-600 font-semibold'
+              />
 
-            <button className='py-3 w-80 bg-violet-600 text-white font-semibold rounded-xl transition-colors hover:bg-violet-800'>
-              Entrar
-            </button>
+              <button
+                type='submit'
+                className='py-3 w-80 bg-violet-600 text-white font-semibold rounded-xl transition-colors hover:bg-violet-800'
+              >
+                Entrar
+              </button>
+            </form>
 
             <span className='font-semibold text-gray-400 text-sm'>Ou</span>
 

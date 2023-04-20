@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { ArrowLeft } from "@phosphor-icons/react";
 import Image from "next/image";
+import { toast } from "react-toastify";
+import * as yup from "yup";
+
+import { api } from "../../lib/axios";
 
 import RegisterImage from "../../assets/handy-safe-protects.png";
 
@@ -24,8 +28,49 @@ export default function Register() {
   async function createUser(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    // Requisição para API
-    console.log(formData);
+    const userSchema = yup.object().shape({
+      name: yup.string().required("O Nome é obrigatorio para prosseguir!"),
+      email: yup
+        .string()
+        .email("Email invalido!")
+        .required("O Email é obrigatorio para prosseguir!"),
+      password: yup
+        .string()
+        .min(4, " A senha deve ter no minimo 4 caracteres!")
+        .required("Senha é obrigatorio para prosseguir!"),
+    });
+
+    try {
+      await userSchema.validate(formData, { abortEarly: false });
+
+      try {
+        await api.post("/users", formData);
+
+        toast.success("Registro realizado sucesso!");
+
+        setTimeout(() => {
+          router.push("/");
+        }, 1000);
+      } catch (error: any) {
+        if (error.response) {
+          if (error.response.status === 400) {
+            return toast.error("Usuario já cadastrado!");
+          } else if (error.response.status === 500) {
+            return toast.error(
+              "Erro ao realizar cadastro! Tente novemente em instantes!"
+            );
+          }
+        } else {
+          console.log("Error", error.message);
+        }
+      }
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        const [firstMessage] = error.inner;
+
+        return toast.error(String(firstMessage.message));
+      }
+    }
   }
 
   function handleFormData(event: React.FormEvent<HTMLInputElement>) {
