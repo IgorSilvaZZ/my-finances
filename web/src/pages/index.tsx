@@ -74,7 +74,7 @@ export default function Home() {
 
   return (
     <div className='flex items-center justify-center h-screen max-w-[1124px] mx-auto'>
-      <main className='max-h-[600px] h-screen max-w-[1000px] w-screen rounded-xl bg-zinc-700 flex'>
+      <main className='max-h-[600px] h-screen max-w-[1000px] w-screen bg-zinc-700 flex'>
         <div className='w-[500px] h-full flex flex-col items-center justify-evenly gap-8 bg-zinc-800'>
           <span className='font-semibold text-gray-300 text-2xl'>
             My Finances
