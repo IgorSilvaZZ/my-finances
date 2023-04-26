@@ -1,3 +1,6 @@
+import { CardHistory } from "@/components/CardHistory";
+import { ArrowRight } from "@phosphor-icons/react";
+
 export default function Home() {
   return (
     <div className='h-screen w-full'>
@@ -28,7 +31,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className='flex flex-col gap-2 w-full h-80 overflow-x-hidden bg-zinc-800 rounded-lg'>
+        <div className='flex flex-col items-center gap-2 w-full h-80 overflow-x-hidden bg-zinc-800 rounded-lg'>
           <div className='flex w-full h-5 items-center justify-between text-sm font-semibold px-4 mt-2'>
             <p className='text-zinc-500'>Historico de Transações</p>
             <span className='text-violet-700 cursor-pointer'>
@@ -36,7 +39,12 @@ export default function Home() {
             </span>
           </div>
 
-          <div className='overflow-y-auto'></div>
+          <div className='flex flex-col items-center px-2 py-4 gap-2 overflow-y-auto'>
+            {/* Colocar tamanaho fixo para cada coluna do card */}
+            <CardHistory name='Mercadinho' date='25/04/2023' value={30} />
+            <CardHistory name='Mercadinho' date='25/04/2023' value={30} />
+            <CardHistory name='Mercadinho' date='25/04/2023' value={30} />
+          </div>
         </div>
       </main>
     </div>
