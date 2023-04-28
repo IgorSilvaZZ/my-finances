@@ -1,21 +1,48 @@
+import moment from "moment";
+
 import { ArrowRight } from "@phosphor-icons/react";
 
 interface CardHistoryProps {
-  name: string;
+  id: string;
+  description: string;
   value: number;
-  date: string;
+  createdAt: string;
+  isExit: boolean;
 }
 
-export const CardHistory = ({ name, value, date }: CardHistoryProps) => {
+export const CardHistory = ({
+  id,
+  description,
+  value,
+  isExit,
+  createdAt,
+}: CardHistoryProps) => {
+  const dateFormat = moment(createdAt).format("DD/MM/YYYY");
+
+  const valueFormat = Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 2,
+  }).format(value);
+
   return (
-    <div className='h-12 w-[1000px] p-2 flex items-center justify-around gap-3 rounded-xl bg-zinc-900 cursor-pointer text-white'>
+    <div
+      className='h-12 w-[1000px] p-2 flex items-center justify-around gap-3 rounded-xl bg-zinc-900 text-white'
+      key={id}
+    >
       <div className='w-9 h-9 flex items-center justify-center rounded-full bg-violet-600'>
         <span className='font-bold'>$</span>
       </div>
-      <span className='font-semibold'>{name}</span>
-      <span className='font-semibold'>{date}</span>
-      <span className='font-bold'>R$ {value.toFixed(2)}</span>
-      <span>
+      <div className='w-52 text-ellipsis overflow-hidden text-center'>
+        <span className='font-semibold'>{description}</span>
+      </div>
+      <div className='w-24 text-center'>
+        <span className='font-semibold'>{dateFormat}</span>
+      </div>
+      <div className='w-40 text-center'>
+        <span className='font-bold'>{valueFormat}</span>
+      </div>
+      <span className='cursor-pointer opacity-50 hover:opacity-100 transition-opacity'>
         <ArrowRight size={24} className='opacity-50' />
       </span>
     </div>
