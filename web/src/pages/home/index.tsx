@@ -1,3 +1,4 @@
+import { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Checkbox from "@radix-ui/react-checkbox";
 
@@ -39,7 +40,34 @@ const histories = [
   },
 ];
 
+interface NewHistory {
+  value: number;
+  description: string;
+  type: string;
+  isExist: boolean;
+}
+
 export default function Home() {
+  const [formNewHistory, setFormNewHistory] = useState({
+    value: 0,
+    description: "",
+    isExist: false,
+    type: "",
+  } as NewHistory);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    console.log(formNewHistory);
+  }
+
+  function handleFormHistory(event: React.FormEvent<HTMLInputElement>) {
+    setFormNewHistory({
+      ...formNewHistory,
+      [event.currentTarget.name]: event.currentTarget.value,
+    });
+  }
+
   return (
     <div className='h-screen w-full'>
       <NavBar />
@@ -63,7 +91,7 @@ export default function Home() {
 
             <Dialog.Root>
               <Dialog.Trigger
-                className='text-violet-700 flex items-center gap-2 font-semibold'
+                className='text-violet-700 flex items-center gap-2 font-semibold transition-colors hover:text-violet-800'
                 type='button'
               >
                 <Plus size={15} />
@@ -82,7 +110,10 @@ export default function Home() {
                     Adicionar nova Transação
                   </Dialog.Title>
 
-                  <form className='w-full flex flex-col mt-6'>
+                  <form
+                    className='w-full flex flex-col mt-6'
+                    onSubmit={handleSubmit}
+                  >
                     <label
                       htmlFor='description'
                       className='font-semibold leading-tight text-zinc-500'
@@ -97,6 +128,7 @@ export default function Home() {
                       placeholder='ex.: Mercadinho, Salario, Mercado...'
                       className='p-4 rounded-lg mt-3 bg-zinc-800 text-white placeholder:text-zinc-400 focus:outline focus:ring-2 focus:ring-violet-600'
                       autoFocus
+                      onChange={handleFormHistory}
                     />
 
                     <label
@@ -107,18 +139,40 @@ export default function Home() {
                     </label>
                     <input
                       type='text'
-                      id='description'
-                      name='description'
+                      id='value'
+                      name='value'
                       placeholder='500.00, 30.00...'
                       className='p-4 rounded-lg mt-3 bg-zinc-800 text-white placeholder:text-zinc-400 focus:outline focus:ring-2 focus:ring-violet-600'
-                      autoFocus
+                      onChange={handleFormHistory}
                     />
 
-                    <div className='flex items-center justify-center gap-2 w-full mt-4'>
-                      <Checkbox.Root className='flex items-center gap-3'>
-                        <div className='h-8 w-8 rounded-lg flex item-center justify-center bg-zinc-900 border-2 border-zinc-800'>
+                    <div className='flex items-center justify-between w-full mt-6'>
+                      <select
+                        name='type'
+                        className='p-2 rounded-lg bg-zinc-800 text-white w-60 outline-none border-2 border-zinc-800'
+                      >
+                        <option value='select' selected>
+                          Selecione o Tipo
+                        </option>
+                        <option value='variable'>Variavel</option>
+                        <option value='fixe'>Fixo</option>
+                      </select>
+
+                      <Checkbox.Root
+                        className='flex items-center gap-3'
+                        onCheckedChange={() =>
+                          setFormNewHistory({
+                            ...formNewHistory,
+                            isExist: !formNewHistory.isExist,
+                          })
+                        }
+                      >
+                        <div className='h-8 w-8 rounded-lg flex items-center justify-center bg-zinc-900 border-2 border-zinc-800'>
                           <Checkbox.Indicator>
-                            <Check size={20} className='text-white' />
+                            <Check
+                              size={20}
+                              className='text-violet-400 font-bold'
+                            />
                           </Checkbox.Indicator>
                         </div>
 
@@ -127,6 +181,14 @@ export default function Home() {
                         </span>
                       </Checkbox.Root>
                     </div>
+
+                    <button
+                      type='submit'
+                      className='mt-6 rounded-lg p-3 flex gap-3 items-center justify-center font-semibold bg-violet-800 text-white transition-colors hover:bg-violet-900'
+                    >
+                      <Check size={20} weight='bold' />
+                      Salvar
+                    </button>
                   </form>
                 </Dialog.Content>
               </Dialog.Portal>
