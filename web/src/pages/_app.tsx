@@ -1,11 +1,13 @@
-import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-
 import { ToastContainer } from "react-toastify";
+
+import "@/styles/globals.css";
 
 import "react-toastify/dist/ReactToastify.css";
 
-export default function App({ Component, pageProps }: AppProps) {
+import { wrapper } from "../store";
+
+export function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <ToastContainer />
@@ -13,3 +15,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </>
   );
 }
+
+export default wrapper.withRedux(App);
