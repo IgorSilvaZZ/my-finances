@@ -2,15 +2,16 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 
 import { IUserState } from "./types/user.types";
-import { AppState } from "..";
 
 const initialState: IUserState = {
-  id: "",
-  name: "",
-  email: "",
-  password: "",
-  balance: 0,
-  avatarUrl: "",
+  user: {
+    id: "",
+    name: "",
+    email: "",
+    password: "",
+    balance: 0,
+    avatarUrl: "",
+  },
   token: "",
 };
 
@@ -19,13 +20,17 @@ const slice = createSlice({
   initialState,
   reducers: {
     authenticate(state, { payload }: PayloadAction<IUserState>): void {
-      state.id = payload.id;
-      state.name = payload.name;
-      state.email = payload.email;
-      state.password = payload.password;
-      state.avatarUrl = payload.avatarUrl;
-      state.balance = payload.balance;
+      state!.user!.id = payload!.user!.id;
+      state!.user!.name = payload!.user!.name;
+      state!.user!.email = payload!.user!.email;
+      state!.user!.password = state!.user!.password;
+      state!.user!.avatarUrl = state!.user!.avatarUrl;
+      state!.user!.balance = state!.user!.balance;
       state.token = payload.token;
+    },
+    clearStateUser(state): void {
+      state.user = null;
+      state.token = null;
     },
   },
   extraReducers: {
@@ -39,6 +44,5 @@ const slice = createSlice({
 });
 
 export const usersActions = slice.actions;
-export const selectUser = (state: AppState) => state.user;
 
 export default slice.reducer;
