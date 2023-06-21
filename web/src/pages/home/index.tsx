@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Checkbox from "@radix-ui/react-checkbox";
 
@@ -6,6 +7,11 @@ import { Check, Plus, X } from "@phosphor-icons/react";
 
 import { CardHistory } from "@/components/CardHistory";
 import { NavBar } from "@/components/NavBar";
+
+import { selectUser } from "../../store/users/user.slice";
+
+// Usar o get do lado do servidor do next
+import { api } from "../../lib/axios";
 
 const histories = [
   {
@@ -48,6 +54,8 @@ interface NewHistory {
 }
 
 export default function Home() {
+  const user = useSelector(selectUser);
+
   const [formNewHistory, setFormNewHistory] = useState({
     value: 0,
     description: "",
@@ -80,7 +88,7 @@ export default function Home() {
           <p className='text-2xl text-white font-bold'>Bem vindo, Igor Silva</p>
           <div className='h-12 w-[450px] bg-violet-600 flex items-center justify-center gap-3 rounded-lg mt-4'>
             <span className='text-white text-lg font-semibold'>
-              Saldo Atual: R$ 0,00
+              Saldo Atual: R$ {user.balance.toFixed(2)}
             </span>
           </div>
         </div>

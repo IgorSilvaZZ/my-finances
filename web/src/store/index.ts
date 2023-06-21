@@ -1,5 +1,5 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { createWrapper, MakeStore } from "next-redux-wrapper";
+import { createWrapper } from "next-redux-wrapper";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import thunk from "redux-thunk";
@@ -28,5 +28,8 @@ export const makeStore = () => {
 
   return store;
 };
+
+export type AppStore = ReturnType<typeof makeStore>;
+export type AppState = ReturnType<AppStore["getState"]>;
 
 export const wrapper = createWrapper(makeStore);
