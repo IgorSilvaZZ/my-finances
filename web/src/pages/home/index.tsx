@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Checkbox from "@radix-ui/react-checkbox";
@@ -13,40 +13,18 @@ import { selectUser } from "../../store/users/user.slice";
 // Usar o get do lado do servidor do next
 import { api } from "../../lib/axios";
 
-const histories = [
-  {
-    id: "8e0c4b88-6644-4a12-94ad-57a782b65406",
-    description: "Escrivaninha",
-    value: 350.0,
-    type: "Variable",
-    isExit: true,
-    createdAt: "2023-04-13T02:13:51.372Z",
-    updatedAt: "2023-04-13T02:13:51.372Z",
-    userId: "b4b8f142-7d2b-4330-8661-fd9a617514eb",
-  },
-  {
-    id: "8e0c4b88-6644-4a12-94ad-57a782b65406",
-    description: "Mesa de Cozinha",
-    value: 150.0,
-    type: "Variable",
-    isExit: true,
-    createdAt: "2023-04-25T02:13:51.372Z",
-    updatedAt: "2023-04-25T02:13:51.372Z",
-    userId: "b4b8f142-7d2b-4330-8661-fd9a617514eb",
-  },
-  {
-    id: "8e0c4b88-6644-4a12-94ad-57a782b65406",
-    description: "Pix da Ana",
-    value: 80.0,
-    type: "Variable",
-    isExit: false,
-    createdAt: "2023-04-28T02:13:51.372Z",
-    updatedAt: "2023-04-28T02:13:51.372Z",
-    userId: "b4b8f142-7d2b-4330-8661-fd9a617514eb",
-  },
-];
+export interface IHistories {
+  id: string;
+  description: string;
+  value: number;
+  type: string;
+  isExit: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
+}
 
-interface NewHistory {
+interface INewHistory {
   value: number;
   description: string;
   type: string;
@@ -61,7 +39,9 @@ export default function Home() {
     description: "",
     isExist: false,
     type: "",
-  } as NewHistory);
+  } as INewHistory);
+
+  const [histories, setHistories] = useState<IHistories[]>();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -75,6 +55,20 @@ export default function Home() {
       [event.currentTarget.name]: event.currentTarget.value,
     });
   }
+
+  async function getHistories() {
+    const { data: histories } = await api.get("/historic", {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
+
+    setHistories(histories);
+  }
+
+  useEffect(() => {
+    getHistories();
+  }, []);
 
   return (
     <div className='h-screen w-full'>
@@ -204,11 +198,11 @@ export default function Home() {
           </div>
 
           <div className='flex flex-col items-center px-2 py-4 gap-2 overflow-y-auto'>
-            {histories.map(({ id, description, isExit, value, createdAt }) => (
+            {histories?.map(({ id, description, isExit, value, createdAt }) => (
               <CardHistory
                 id={id}
                 description={description}
-                createdAt={createdAt}
+                createdAt={createdAt.toString()}
                 value={value}
                 isExit={isExit}
               />
