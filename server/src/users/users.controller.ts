@@ -34,11 +34,11 @@ export class UsersController {
 
   @Post('/login')
   async authenticate(@Body() authenticateUserDTO: AuthenticateUserDTO) {
-    const token = await this.authenticateUserUseCase.execute(
+    const { user, token } = await this.authenticateUserUseCase.execute(
       authenticateUserDTO,
     );
 
-    return { token };
+    return { user, token };
   }
 
   @UseGuards(AuthGuard)

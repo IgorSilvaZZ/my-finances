@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 import * as yup from "yup";
+
+import { usersActions } from "../store/users/user.slice";
 
 import { api } from "../lib/axios";
 
@@ -15,6 +18,7 @@ interface UserFormLogin {
 
 export default function Home() {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -38,9 +42,11 @@ export default function Home() {
       try {
         const { data } = await api.post("/users/login", formData);
 
-        const token = data.token;
+        dispatch(usersActions.authenticate(data));
 
         toast.success("Logado com sucesso!");
+        
+        router.push("/home");
       } catch (error: any) {
         if (error.response) {
           if (error.response.status === 400) {

@@ -27,6 +27,6 @@ export class AuthenticateUserUseCase {
 
     const token = await this.jwtService.signAsync({ sub: userExists.id });
 
-    return token;
+    return { user: userExists, token };
   }
 }

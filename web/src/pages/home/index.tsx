@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Checkbox from "@radix-ui/react-checkbox";
 
@@ -7,40 +8,23 @@ import { Check, Plus, X } from "@phosphor-icons/react";
 import { CardHistory } from "@/components/CardHistory";
 import { NavBar } from "@/components/NavBar";
 
-const histories = [
-  {
-    id: "8e0c4b88-6644-4a12-94ad-57a782b65406",
-    description: "Escrivaninha",
-    value: 350.0,
-    type: "Variable",
-    isExit: true,
-    createdAt: "2023-04-13T02:13:51.372Z",
-    updatedAt: "2023-04-13T02:13:51.372Z",
-    userId: "b4b8f142-7d2b-4330-8661-fd9a617514eb",
-  },
-  {
-    id: "8e0c4b88-6644-4a12-94ad-57a782b65406",
-    description: "Mesa de Cozinha",
-    value: 150.0,
-    type: "Variable",
-    isExit: true,
-    createdAt: "2023-04-25T02:13:51.372Z",
-    updatedAt: "2023-04-25T02:13:51.372Z",
-    userId: "b4b8f142-7d2b-4330-8661-fd9a617514eb",
-  },
-  {
-    id: "8e0c4b88-6644-4a12-94ad-57a782b65406",
-    description: "Pix da Ana",
-    value: 80.0,
-    type: "Variable",
-    isExit: false,
-    createdAt: "2023-04-28T02:13:51.372Z",
-    updatedAt: "2023-04-28T02:13:51.372Z",
-    userId: "b4b8f142-7d2b-4330-8661-fd9a617514eb",
-  },
-];
+import { selectUser } from "../../store/users/user.slice";
 
-interface NewHistory {
+// Usar o get do lado do servidor do next
+import { api } from "../../lib/axios";
+
+export interface IHistories {
+  id: string;
+  description: string;
+  value: number;
+  type: string;
+  isExit: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
+}
+
+interface INewHistory {
   value: number;
   description: string;
   type: string;
@@ -48,12 +32,16 @@ interface NewHistory {
 }
 
 export default function Home() {
+  const user = useSelector(selectUser);
+
   const [formNewHistory, setFormNewHistory] = useState({
     value: 0,
     description: "",
     isExist: false,
     type: "",
-  } as NewHistory);
+  } as INewHistory);
+
+  const [histories, setHistories] = useState<IHistories[]>();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -68,6 +56,20 @@ export default function Home() {
     });
   }
 
+  async function getHistories() {
+    const { data: histories } = await api.get("/historic", {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
+
+    setHistories(histories);
+  }
+
+  useEffect(() => {
+    getHistories();
+  }, []);
+
   return (
     <div className='h-screen w-full'>
       <NavBar />
@@ -80,7 +82,7 @@ export default function Home() {
           <p className='text-2xl text-white font-bold'>Bem vindo, Igor Silva</p>
           <div className='h-12 w-[450px] bg-violet-600 flex items-center justify-center gap-3 rounded-lg mt-4'>
             <span className='text-white text-lg font-semibold'>
-              Saldo Atual: R$ 0,00
+              Saldo Atual: R$ {user.balance.toFixed(2)}
             </span>
           </div>
         </div>
@@ -196,11 +198,11 @@ export default function Home() {
           </div>
 
           <div className='flex flex-col items-center px-2 py-4 gap-2 overflow-y-auto'>
-            {histories.map(({ id, description, isExit, value, createdAt }) => (
+            {histories?.map(({ id, description, isExit, value, createdAt }) => (
               <CardHistory
                 id={id}
                 description={description}
-                createdAt={createdAt}
+                createdAt={createdAt.toString()}
                 value={value}
                 isExit={isExit}
               />
