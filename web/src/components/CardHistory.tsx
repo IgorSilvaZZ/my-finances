@@ -1,4 +1,5 @@
 import moment from "moment";
+import numeral from "numeral";
 
 import { ArrowRight } from "@phosphor-icons/react";
 
@@ -19,11 +20,7 @@ export const CardHistory = ({
 }: CardHistoryProps) => {
   const dateFormat = moment(createdAt).format("DD/MM/YYYY");
 
-  const valueFormat = Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 2,
-  }).format(value);
+  const valueFormat = `R$ ${numeral(value).format("0,0")}`;
 
   return (
     <div

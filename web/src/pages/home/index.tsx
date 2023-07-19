@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Checkbox from "@radix-ui/react-checkbox";
+import numeral from "numeral";
 
 import { Check, Plus, X } from "@phosphor-icons/react";
 
@@ -82,7 +83,7 @@ export default function Home() {
           <p className='text-2xl text-white font-bold'>Bem vindo, Igor Silva</p>
           <div className='h-12 w-[450px] bg-violet-600 flex items-center justify-center gap-3 rounded-lg mt-4'>
             <span className='text-white text-lg font-semibold'>
-              Saldo Atual: R$ {user.balance.toFixed(2)}
+              Saldo Atual: R$ {numeral(user.balance).format('0,0')}
             </span>
           </div>
         </div>
@@ -201,6 +202,7 @@ export default function Home() {
             {histories?.map(({ id, description, isExit, value, createdAt }) => (
               <CardHistory
                 id={id}
+                key={id}
                 description={description}
                 createdAt={createdAt.toString()}
                 value={value}
