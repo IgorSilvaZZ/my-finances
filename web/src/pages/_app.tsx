@@ -9,8 +9,9 @@ import "@/styles/globals.css";
 
 import "react-toastify/dist/ReactToastify.css";
 
-export function App({ Component, pageProps }: AppProps) {
+import "../lib/dayjs";
 
+export function App({ Component, pageProps }: AppProps) {
   const store: any = useStore();
 
   return (
