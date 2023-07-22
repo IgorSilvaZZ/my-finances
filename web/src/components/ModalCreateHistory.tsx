@@ -1,26 +1,39 @@
 import { useState } from "react";
-
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+
 import * as yup from "yup";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Checkbox from "@radix-ui/react-checkbox";
+import numeral from "numeral";
 
 import { Check, Plus, X } from "@phosphor-icons/react";
 
+import { selectUser } from "@/store/users/user.slice";
 import { api } from "../lib/axios";
+
+interface IModalCreateHistoryProps {
+  getHistories(): Promise<void>;
+}
 
 interface INewHistory {
   value: number;
+  valueFormatted?: string;
   description: string;
   type: string;
-  isExist: boolean;
+  isExit: boolean;
 }
 
-export const ModalCreateHistory = () => {
+export const ModalCreateHistory = ({
+  getHistories,
+}: IModalCreateHistoryProps) => {
+  const user = useSelector(selectUser);
+
   const [formNewHistory, setFormNewHistory] = useState({
-    value: 0,
     description: "",
-    isExist: false,
+    value: 0,
+    valueFormatted: "0",
+    isExit: false,
     type: "",
   } as INewHistory);
 
@@ -39,8 +52,8 @@ export const ModalCreateHistory = () => {
         .string()
         .required("A Descrição é obrigatorio para prosseguir!")
         .min(5, "Coloque uma descrição no minimo de 5 caracteres"),
-      value: yup
-        .number()
+      valueFormatted: yup
+        .string()
         .required("O valor da transação é obrigatorio para prosseguir!"),
       type: yup
         .string()
@@ -50,7 +63,44 @@ export const ModalCreateHistory = () => {
     try {
       await historySchema.validate(formNewHistory, { abortEarly: false });
 
-      console.log(formNewHistory);
+      const newHistoryData = {
+        ...formNewHistory,
+        value: numeral(formNewHistory.valueFormatted).value(),
+      };
+
+      delete newHistoryData.valueFormatted;
+
+      try {
+        console.log(newHistoryData);
+
+        await api.post("/historic", newHistoryData, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+
+        toast.success("Transação cadastrada com sucesso!");
+
+        setFormNewHistory({
+          description: "",
+          value: 0,
+          valueFormatted: "0",
+          isExit: false,
+          type: "",
+        });
+
+        getHistories();
+      } catch (error: any) {
+        if (error.response) {
+          if (error.response.status === 400) {
+            console.log(`Erro ao cadastrar nova transação! Tente novamente!`);
+          } else if (error.response.status === 500) {
+            console.log(
+              `Erro interno no servidor! Contate o suporte para mais informações!`
+            );
+          }
+        }
+      }
     } catch (error) {
       if (error instanceof yup.ValidationError) {
         const [firstMessage] = error.inner;
@@ -58,8 +108,6 @@ export const ModalCreateHistory = () => {
         return toast.error(String(firstMessage.message));
       }
     }
-
-    console.log(formNewHistory);
   }
 
   return (
@@ -96,6 +144,7 @@ export const ModalCreateHistory = () => {
               type='text'
               id='description'
               name='description'
+              value={formNewHistory.description}
               placeholder='ex.: Mercadinho, Salario, Mercado...'
               className='p-4 rounded-lg mt-3 bg-zinc-800 text-white placeholder:text-zinc-400 focus:outline focus:ring-2 focus:ring-violet-600'
               autoFocus
@@ -111,16 +160,26 @@ export const ModalCreateHistory = () => {
             <input
               type='text'
               id='value'
-              name='value'
+              name='valueFormatted'
+              value={formNewHistory.valueFormatted}
               placeholder='500.00, 30.00...'
               className='p-4 rounded-lg mt-3 bg-zinc-800 text-white placeholder:text-zinc-400 focus:outline focus:ring-2 focus:ring-violet-600'
-              onChange={handleFormHistory}
+              onChange={(e) =>
+                setFormNewHistory({
+                  ...formNewHistory,
+                  valueFormatted: numeral(e.target.value).format("0,0"),
+                })
+              }
             />
 
             <div className='flex items-center justify-between w-full mt-6'>
               <select
                 name='type'
                 className='p-2 rounded-lg bg-zinc-800 text-white w-60 outline-none border-2 border-zinc-800'
+                value={formNewHistory.type}
+                onChange={(e) =>
+                  setFormNewHistory({ ...formNewHistory, type: e.target.value })
+                }
               >
                 <option value='select' selected>
                   Selecione o Tipo
@@ -134,7 +193,7 @@ export const ModalCreateHistory = () => {
                 onCheckedChange={() =>
                   setFormNewHistory({
                     ...formNewHistory,
-                    isExist: !formNewHistory.isExist,
+                    isExit: !formNewHistory.isExit,
                   })
                 }
               >

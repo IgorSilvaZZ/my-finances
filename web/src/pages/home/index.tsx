@@ -63,7 +63,7 @@ export default function Home() {
         <div className='flex flex-col items-center gap-2 w-full h-80 overflow-x-hidden bg-zinc-800 rounded-lg'>
           <div className='flex w-full h-5 items-center justify-between text-sm font-semibold px-4 mt-2'>
             <p className='text-zinc-500'>Historico de Transações</p>
-            <ModalCreateHistory />
+            <ModalCreateHistory getHistories={getHistories} />
           </div>
 
           <div className='flex flex-col items-center px-2 py-4 gap-2 overflow-y-auto'>
