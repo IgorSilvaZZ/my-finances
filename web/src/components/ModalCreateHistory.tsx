@@ -37,6 +37,8 @@ export const ModalCreateHistory = ({
     type: "",
   } as INewHistory);
 
+  const [modalOpen, setModalOpen] = useState(false);
+
   function handleFormHistory(event: React.FormEvent<HTMLInputElement>) {
     setFormNewHistory({
       ...formNewHistory,
@@ -81,6 +83,8 @@ export const ModalCreateHistory = ({
 
         toast.success("Transação cadastrada com sucesso!");
 
+        setModalOpen(!modalOpen);
+
         setFormNewHistory({
           description: "",
           value: 0,
@@ -111,7 +115,7 @@ export const ModalCreateHistory = ({
   }
 
   return (
-    <Dialog.Root>
+    <Dialog.Root open={modalOpen} onOpenChange={setModalOpen}>
       <Dialog.Trigger
         className='text-violet-700 flex items-center gap-2 font-semibold transition-colors hover:text-violet-800'
         type='button'
