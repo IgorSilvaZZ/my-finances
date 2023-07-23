@@ -9,7 +9,6 @@ import { NavBar } from "@/components/NavBar";
 
 import { selectUser } from "../../store/users/user.slice";
 
-// Usar o get do lado do servidor do next
 import { api } from "../../lib/axios";
 import { ModalCreateHistory } from "@/components/ModalCreateHistory";
 
@@ -52,7 +51,9 @@ export default function Home() {
           <p className='text-base text-zinc-500 font-semibold'>
             {dayjs().format("dddd, DD [de] MMMM [de] YYYY")}
           </p>
-          <p className='text-2xl text-white font-bold'>Bem vindo, Igor Silva</p>
+          <p className='text-2xl text-white font-bold'>
+            Bem vindo, {user.name}
+          </p>
           <div className='h-12 w-[450px] bg-violet-600 flex items-center justify-center gap-3 rounded-lg mt-4'>
             <span className='text-white text-lg font-semibold'>
               Saldo Atual: R$ {numeral(user.balance).format("0,0")}

@@ -27,6 +27,9 @@ const slice = createSlice({
       state.balance = payload.user.balance;
       state.token = payload.token;
     },
+    updateBalance(state, { payload }): void {
+      state.balance = payload.balance;
+    },
     clearStateUser(state): void {
       state.id = "";
       state.name = "";
