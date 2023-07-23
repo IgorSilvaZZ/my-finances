@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 import { UsersInMemoryRepository } from '../../../test/repositories/UsersInMemoryRepository';
 import { HistoricRepositoryInMemory } from '../../../test/repositories/HistoricRepositoryInMemory';
@@ -21,20 +21,23 @@ describe('Create Historic', () => {
     );
   });
 
-  it('should be able create a historic', async () => {
+  it('should be able create a historic and update balance user', async () => {
     const user = await usersRepositoryInMemory.create(makeUser());
 
-    const historic = await createHistoricUseCase.execute({
-      description: 'Compras no mercadinho',
+    const newHistoric = await createHistoricUseCase.execute({
+      description: 'Pix Amigo',
       type: 'Variable',
-      isExit: true,
+      isExit: false,
       userId: user.id,
-      value: 60.0,
+      value: 100.0,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
 
-    expect(historic).toBeTruthy();
+    expect(newHistoric).toHaveProperty('historic');
+    expect(newHistoric).toHaveProperty('newBalance');
+    expect(newHistoric.historic).toHaveProperty('id');
+    expect(newHistoric.newBalance).toEqual(100.0);
   });
 
   it('should not be able create a historic user not exists', async () => {
@@ -48,6 +51,24 @@ describe('Create Historic', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-    }).rejects.toEqual(new NotFoundException('User not exists!'))
+    }).rejects.toEqual(new NotFoundException('User not exists!'));
+  });
+
+  it('should not be able create a historic user not insufficient balance!', async () => {
+    const user = await usersRepositoryInMemory.create(makeUser());
+
+    expect(() => {
+      return createHistoricUseCase.execute({
+        description: 'Fone de ouvido',
+        type: 'Variable',
+        isExit: true,
+        userId: user.id,
+        value: 120.0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    }).rejects.toEqual(
+      new BadRequestException('User with insufficient balance!'),
+    );
   });
 });

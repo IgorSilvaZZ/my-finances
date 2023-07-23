@@ -9,6 +9,7 @@ export function makeUser(override: Override = {}) {
     name: 'user test',
     email: 'usertest@email.com',
     password: 'passwordtest',
+    balance: 0,
     ...override,
   };
 }

@@ -12,7 +12,11 @@ describe('List Historic a user', () => {
     const historicRepositoryInMemory = new HistoricRepositoryInMemory();
     const usersRepositoryInMemory = new UsersInMemoryRepository();
 
-    const user = await usersRepositoryInMemory.create(makeUser());
+    const user = await usersRepositoryInMemory.create(
+      makeUser({
+        balance: 3000.0,
+      }),
+    );
 
     const createHistoricUseCase = new CreateHistoricUseCase(
       historicRepositoryInMemory,
@@ -32,7 +36,7 @@ describe('List Historic a user', () => {
     await createHistoricUseCase.execute({
       description: 'Celular',
       type: 'Variable',
-      isExit: true,
+      isExit: false,
       userId: user.id,
       value: 2000.0,
       createdAt: new Date(),

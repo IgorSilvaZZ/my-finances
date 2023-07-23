@@ -23,6 +23,7 @@ export class CreateUserUseCase {
     const user = await this.usersRepository.create({
       name,
       email,
+      balance: 0,
       password: passwordCrypt,
       avatarUrl,
     });

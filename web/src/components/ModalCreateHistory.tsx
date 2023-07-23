@@ -1,15 +1,16 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
 import * as yup from "yup";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Checkbox from "@radix-ui/react-checkbox";
+import * as Tooltip from "@radix-ui/react-tooltip";
 import numeral from "numeral";
 
-import { Check, Plus, X } from "@phosphor-icons/react";
+import { Check, Plus, X, Question } from "@phosphor-icons/react";
 
-import { selectUser } from "@/store/users/user.slice";
+import { selectUser, usersActions } from "@/store/users/user.slice";
 import { api } from "../lib/axios";
 
 interface IModalCreateHistoryProps {
@@ -28,6 +29,7 @@ export const ModalCreateHistory = ({
   getHistories,
 }: IModalCreateHistoryProps) => {
   const user = useSelector(selectUser);
+  const dispatch = useDispatch();
 
   const [formNewHistory, setFormNewHistory] = useState({
     description: "",
@@ -38,6 +40,18 @@ export const ModalCreateHistory = ({
   } as INewHistory);
 
   const [modalOpen, setModalOpen] = useState(false);
+
+  function handleOpenModal() {
+    setModalOpen(!modalOpen);
+
+    setFormNewHistory({
+      description: "",
+      value: 0,
+      valueFormatted: "0",
+      isExit: false,
+      type: "",
+    });
+  }
 
   function handleFormHistory(event: React.FormEvent<HTMLInputElement>) {
     setFormNewHistory({
@@ -73,13 +87,15 @@ export const ModalCreateHistory = ({
       delete newHistoryData.valueFormatted;
 
       try {
-        console.log(newHistoryData);
-
-        await api.post("/historic", newHistoryData, {
+        const { data } = await api.post("/historic", newHistoryData, {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
         });
+
+        const newBalance = data.newBalance;
+
+        dispatch(usersActions.updateBalance({ balance: newBalance }));
 
         toast.success("Transação cadastrada com sucesso!");
 
@@ -97,7 +113,7 @@ export const ModalCreateHistory = ({
       } catch (error: any) {
         if (error.response) {
           if (error.response.status === 400) {
-            console.log(`Erro ao cadastrar nova transação! Tente novamente!`);
+            toast.error(error.response.data.message);
           } else if (error.response.status === 500) {
             console.log(
               `Erro interno no servidor! Contate o suporte para mais informações!`
@@ -115,7 +131,7 @@ export const ModalCreateHistory = ({
   }
 
   return (
-    <Dialog.Root open={modalOpen} onOpenChange={setModalOpen}>
+    <Dialog.Root open={modalOpen} onOpenChange={handleOpenModal}>
       <Dialog.Trigger
         className='text-violet-700 flex items-center gap-2 font-semibold transition-colors hover:text-violet-800'
         type='button'
@@ -191,6 +207,22 @@ export const ModalCreateHistory = ({
                 <option value='variable'>Variavel</option>
                 <option value='fixe'>Fixo</option>
               </select>
+
+              <Tooltip.Provider>
+                <Tooltip.Root>
+                  <Tooltip.Trigger>
+                    <Question size={20} className='text-violet-500 font-bold' />
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content className='w-52 rounded-md px-3 py-4 text-sm text-violet-700 bg-white'>
+                      <b>Fixo: </b> Será descontado do seu saldo todo mês <br />
+                      <b>Variavel: </b> Um gasto que nem sempre será descontado
+                      e pode ter ou não em um mês
+                      <Tooltip.Arrow />
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
+              </Tooltip.Provider>
 
               <Checkbox.Root
                 className='flex items-center gap-3'

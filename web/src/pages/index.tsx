@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
-import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+
+import Image from "next/image";
+
 import * as yup from "yup";
 
 import { usersActions } from "../store/users/user.slice";
@@ -45,7 +47,7 @@ export default function Home() {
         dispatch(usersActions.authenticate(data));
 
         toast.success("Logado com sucesso!");
-        
+
         router.push("/home");
       } catch (error: any) {
         if (error.response) {

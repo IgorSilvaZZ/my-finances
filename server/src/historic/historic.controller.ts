@@ -34,11 +34,11 @@ export class HistoricController {
       userId: request.userId,
     };
 
-    const historic = await this.createHistoricUseCase.execute(
+    const { historic, newBalance } = await this.createHistoricUseCase.execute(
       dataCreateHistoric,
     );
 
-    return historic;
+    return { historic, newBalance };
   }
 
   @UseGuards(AuthGuard)

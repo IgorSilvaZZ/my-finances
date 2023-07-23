@@ -11,10 +11,16 @@ import { PrismaUserMapper } from '../../src/database/mappers/PrismaUserMapper';
 export class UsersInMemoryRepository implements UsersRepository {
   public users: IUser[] = [];
 
-  async create({ name, email, password }: CreateUserDTO): Promise<UserPrisma> {
+  async create({
+    name,
+    email,
+    password,
+    balance,
+  }: CreateUserDTO): Promise<UserPrisma> {
     const dataUser: IUser = {
       id: uuid(),
       name,
+      balance: balance,
       email,
       password,
     };

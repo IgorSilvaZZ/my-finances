@@ -18,6 +18,7 @@ describe('Create User', () => {
       name: 'Igor Silva',
       email: 'igor@email.com',
       password: '123',
+      balance: 0,
     };
 
     const user = await createUserUseCase.execute(userData);

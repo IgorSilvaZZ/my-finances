@@ -11,8 +11,8 @@ export const NavBar = () => {
   const user = useSelector(selectUser);
 
   function logout() {
-    dispatch(usersActions.clearStateUser());
     router.push("/");
+    dispatch(usersActions.clearStateUser());
   }
 
   return (
