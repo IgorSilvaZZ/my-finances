@@ -43,4 +43,10 @@ export class HistoricRepositoryInMemory implements HistoricRepository {
 
     return PrismaHistoricMapper.toPrisma(data);
   }
+
+  async findById(id: string): Promise<HistoricPrisma> {
+    const historic = this.historic.find((historic) => historic.id === id);
+
+    return historic;
+  }
 }

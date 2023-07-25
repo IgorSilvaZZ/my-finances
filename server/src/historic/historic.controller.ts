@@ -7,10 +7,14 @@ import {
   Body,
   Request,
   UseGuards,
+  Param,
+  Logger,
 } from '@nestjs/common';
 
 import { CreateHistoricUseCase } from './useCases/CreateHistoricUseCase';
 import { ListHistoricUseCase } from './useCases/ListHistoricUseCase';
+import { FindByIdHistoricUseCase } from './useCases/FindByIdHistoricUseCase';
+
 import { CreateHistoricDTO } from './dtos/CreateHistoricDTO';
 
 import { AuthGuard } from '../guards/auth.guard';
@@ -21,7 +25,10 @@ export class HistoricController {
   constructor(
     private createHistoricUseCase: CreateHistoricUseCase,
     private listHistoricUseCase: ListHistoricUseCase,
+    private findByIdHistoricUseCase: FindByIdHistoricUseCase,
   ) {}
+
+  logger = new Logger(HistoricController.name);
 
   @UseGuards(AuthGuard)
   @Post('/')
@@ -49,5 +56,15 @@ export class HistoricController {
     const listHistoric = await this.listHistoricUseCase.execute(userId);
 
     return listHistoric;
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/:id')
+  async listHistoric(@Param('id') id: string) {
+    this.logger.log(id);
+
+    const historic = await this.findByIdHistoricUseCase.execute(id);
+
+    return historic;
   }
 }

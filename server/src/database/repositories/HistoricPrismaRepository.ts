@@ -26,4 +26,16 @@ export class HistoricPrismaRepository implements HistoricRepository {
 
     return historic;
   }
+
+  async findById(id: string): Promise<HistoricPrisma | null> {
+    const historic = await this.prismaService.historic.findFirst({
+      where: { id },
+    });
+
+    if (!historic) {
+      return null;
+    }
+
+    return historic;
+  }
 }

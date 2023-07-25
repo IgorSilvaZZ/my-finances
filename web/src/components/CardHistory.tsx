@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import numeral from "numeral";
 import dayjs from "dayjs";
 
@@ -39,9 +41,12 @@ export const CardHistory = ({
       <div className='w-40 text-center'>
         <span className='font-bold'>{valueFormat}</span>
       </div>
-      <span className='cursor-pointer opacity-50 hover:opacity-100 transition-opacity'>
+      <Link
+        className='cursor-pointer opacity-50 hover:opacity-100 transition-opacity'
+        href={`/historic/${id}`}
+      >
         <ArrowRight size={24} className='opacity-50' />
-      </span>
+      </Link>
     </div>
   );
 };
