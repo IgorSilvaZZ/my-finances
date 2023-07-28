@@ -18,7 +18,6 @@ import { FindByIdHistoricUseCase } from './useCases/FindByIdHistoricUseCase';
 import { CreateHistoricDTO } from './dtos/CreateHistoricDTO';
 
 import { AuthGuard } from '../guards/auth.guard';
-import { Replace } from 'src/helpers/Replace';
 
 @Controller('/historic')
 export class HistoricController {
@@ -34,7 +33,7 @@ export class HistoricController {
   @Post('/')
   async createHistoric(
     @Request() request,
-    @Body() createHistoricDTO: Replace<CreateHistoricDTO, { userId?: string }>,
+    @Body() createHistoricDTO: CreateHistoricDTO,
   ) {
     const dataCreateHistoric = {
       ...createHistoricDTO,

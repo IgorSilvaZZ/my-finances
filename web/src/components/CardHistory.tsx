@@ -1,9 +1,7 @@
-import Link from "next/link";
-
 import numeral from "numeral";
 import dayjs from "dayjs";
 
-import { ArrowRight } from "@phosphor-icons/react";
+import { PlusCircle } from "@phosphor-icons/react";
 
 interface CardHistoryProps {
   id: string;
@@ -41,12 +39,10 @@ export const CardHistory = ({
       <div className='w-40 text-center'>
         <span className='font-bold'>{valueFormat}</span>
       </div>
-      <Link
-        className='cursor-pointer opacity-50 hover:opacity-100 transition-opacity'
-        href={`/historic/${id}`}
-      >
-        <ArrowRight size={24} className='opacity-50' />
-      </Link>
+      <div className='cursor-pointer opacity-50 hover:opacity-100 transition-opacity'>
+        {/* Colocar um tooltip e um icone melhor para representar se saida ou nao */}
+        <PlusCircle size={24} className='opacity-50' />
+      </div>
     </div>
   );
 };

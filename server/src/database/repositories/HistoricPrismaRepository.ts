@@ -6,6 +6,7 @@ import { Historic as HistoricPrisma } from '@prisma/client';
 import { CreateHistoricDTO } from '../../historic/dtos/CreateHistoricDTO';
 import { HistoricRepository } from '../../historic/repositories/HistoricRepository';
 import { PrismaService } from '../database.service';
+import { Replace } from '../../helpers/Replace';
 
 @Injectable()
 export class HistoricPrismaRepository implements HistoricRepository {
@@ -19,7 +20,9 @@ export class HistoricPrismaRepository implements HistoricRepository {
     return historicList;
   }
 
-  async create(data: CreateHistoricDTO): Promise<HistoricPrisma> {
+  async create(
+    data: Replace<CreateHistoricDTO, { userId: string }>,
+  ): Promise<HistoricPrisma> {
     const historic = await this.prismaService.historic.create({
       data,
     });
