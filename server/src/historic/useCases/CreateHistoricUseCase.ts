@@ -10,6 +10,8 @@ import { CreateHistoricDTO } from '../dtos/CreateHistoricDTO';
 import { HistoricRepository } from '../repositories/HistoricRepository';
 import { UsersRepository } from '../../users/repositories/UsersRepository';
 
+import { Replace } from '../../helpers/Replace';
+
 @Injectable()
 export class CreateHistoricUseCase {
   constructor(
@@ -17,7 +19,7 @@ export class CreateHistoricUseCase {
     private usersRepository: UsersRepository,
   ) {}
 
-  async execute(data: CreateHistoricDTO) {
+  async execute(data: Replace<CreateHistoricDTO, { userId: string }>) {
     const idUser = data.userId;
 
     const historicIsExit = data.isExit;

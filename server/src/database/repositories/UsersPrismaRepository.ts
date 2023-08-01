@@ -47,11 +47,11 @@ export class UsersPrismaRepository implements UsersRepository {
   }
 
   async updateBalance(id: string, balance: number): Promise<number> {
-    const updateBalanceUser = await this.prismaService.user.update({
+    const { balance: updateBalance } = await this.prismaService.user.update({
       where: { id },
       data: { balance },
     });
 
-    return updateBalanceUser.balance;
+    return updateBalance;
   }
 }

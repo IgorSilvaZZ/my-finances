@@ -8,6 +8,8 @@ import { IHistoric } from '../../src/historic/interfaces/Historic';
 import { HistoricRepository } from '../../src/historic/repositories/HistoricRepository';
 import { PrismaHistoricMapper } from '../../src/database/mappers/PrismaHistoricMapper';
 
+import { Replace } from '../../src/helpers/Replace';
+
 export class HistoricRepositoryInMemory implements HistoricRepository {
   public historic: IHistoric[] = [];
 
@@ -27,7 +29,7 @@ export class HistoricRepositoryInMemory implements HistoricRepository {
     userId,
     createdAt,
     updatedAt,
-  }: CreateHistoricDTO): Promise<HistoricPrisma> {
+  }: Replace<CreateHistoricDTO, { userId: string }>): Promise<HistoricPrisma> {
     const data: IHistoric = {
       id: randomUUID(),
       description,
@@ -42,5 +44,11 @@ export class HistoricRepositoryInMemory implements HistoricRepository {
     this.historic.push(data);
 
     return PrismaHistoricMapper.toPrisma(data);
+  }
+
+  async findById(id: string): Promise<HistoricPrisma> {
+    const historic = this.historic.find((historic) => historic.id === id);
+
+    return historic;
   }
 }

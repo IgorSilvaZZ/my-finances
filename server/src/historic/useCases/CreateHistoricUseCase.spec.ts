@@ -21,13 +21,17 @@ describe('Create Historic', () => {
     );
   });
 
-  it('should be able create a historic and update balance user', async () => {
-    const user = await usersRepositoryInMemory.create(makeUser());
+  it.only('should be able create a historic and update balance user', async () => {
+    const user = await usersRepositoryInMemory.create(
+      makeUser({
+        balance: 1000.0,
+      }),
+    );
 
     const newHistoric = await createHistoricUseCase.execute({
       description: 'Pix Amigo',
       type: 'Variable',
-      isExit: false,
+      isExit: true,
       userId: user.id,
       value: 100.0,
       createdAt: new Date(),
@@ -37,7 +41,7 @@ describe('Create Historic', () => {
     expect(newHistoric).toHaveProperty('historic');
     expect(newHistoric).toHaveProperty('newBalance');
     expect(newHistoric.historic).toHaveProperty('id');
-    expect(newHistoric.newBalance).toEqual(100.0);
+    expect(newHistoric.newBalance).toEqual(900.0);
   });
 
   it('should not be able create a historic user not exists', async () => {
