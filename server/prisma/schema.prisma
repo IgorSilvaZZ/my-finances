@@ -21,6 +21,16 @@ model User {
   historics Historic[]
 }
 
+model Category {
+  id          String   @id @default(uuid())
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+
+  historic   Historic? @relation(fields: [historicId], references: [id])
+  historicId String?
+}
+
 model Historic {
   id          String   @id @default(uuid())
   description String
@@ -32,4 +42,6 @@ model Historic {
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
+
+  category Category[]
 }
