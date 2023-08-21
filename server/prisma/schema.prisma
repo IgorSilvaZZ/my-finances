@@ -19,6 +19,7 @@ model User {
   avatarUrl String?
 
   historics Historic[]
+  Category  Category[]
 }
 
 model Category {
@@ -27,8 +28,10 @@ model Category {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
 
-  historic   Historic? @relation(fields: [historicId], references: [id])
-  historicId String?
+  Historic Historic[]
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 }
 
 model Historic {
@@ -43,5 +46,6 @@ model Historic {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  category Category[]
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
 }
