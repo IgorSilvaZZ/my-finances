@@ -27,6 +27,7 @@ export class HistoricRepositoryInMemory implements HistoricRepository {
     type,
     isExit,
     userId,
+    categoryId,
     createdAt,
     updatedAt,
   }: Replace<CreateHistoricDTO, { userId: string }>): Promise<HistoricPrisma> {
@@ -34,6 +35,7 @@ export class HistoricRepositoryInMemory implements HistoricRepository {
       id: randomUUID(),
       description,
       userId,
+      categoryId,
       value,
       type,
       isExit,

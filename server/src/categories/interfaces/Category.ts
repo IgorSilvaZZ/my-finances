@@ -1,12 +1,8 @@
 /* eslint-disable prettier/prettier */
 
-export interface IHistoric {
+export interface ICategory {
   id: string;
   description: string;
-  categoryId: string;
-  value: number;
-  type: string;
-  isExit: boolean;
   userId: string;
   createdAt: Date;
   updatedAt: Date;
