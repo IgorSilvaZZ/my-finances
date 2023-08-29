@@ -9,6 +9,7 @@ import {
 import { CreateHistoricDTO } from '../dtos/CreateHistoricDTO';
 import { HistoricRepository } from '../repositories/HistoricRepository';
 import { UsersRepository } from '../../users/repositories/UsersRepository';
+import { CategoryRepository } from '../../categories/repositories/CategoryRepository';
 
 import { Replace } from '../../helpers/Replace';
 
@@ -17,6 +18,7 @@ export class CreateHistoricUseCase {
   constructor(
     private historicRepository: HistoricRepository,
     private usersRepository: UsersRepository,
+    private categoryRepository: CategoryRepository,
   ) {}
 
   async execute(data: Replace<CreateHistoricDTO, { userId: string }>) {
@@ -28,6 +30,12 @@ export class CreateHistoricUseCase {
 
     if (!userExists) {
       throw new NotFoundException('User not exists!');
+    }
+
+    const categoryExists = this.categoryRepository.findById(data.categoryId);
+
+    if (!categoryExists) {
+      throw new NotFoundException('Category not exists!');
     }
 
     if (data.isExit && userExists.balance <= 0) {

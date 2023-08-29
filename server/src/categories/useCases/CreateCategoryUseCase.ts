@@ -1,29 +1,30 @@
 /* eslint-disable prettier/prettier */
 
-import { UsersRepository } from 'src/users/repositories/UsersRepository';
-import { CreateCategoryDTO } from '../dtos/CreateCategoryDTO';
+import { NotFoundException } from '@nestjs/common';
+
+import { UsersRepository } from '../../users/repositories/UsersRepository';
 import { CategoryRepository } from '../repositories/CategoryRepository';
-import { BadRequestException } from '@nestjs/common';
+
+import { CreateCategoryDTO } from '../dtos/CreateCategoryDTO';
 
 export class CreateCategoryUseCase {
   constructor(
-    private categoryRepository: CategoryRepository,
     private usersRepository: UsersRepository,
+    private categoryRepository: CategoryRepository,
   ) {}
 
   async execute({ description, userId }: CreateCategoryDTO) {
-    const categoryExists = await this.categoryRepository.findByDescription(
-      description,
-    );
-
-    if (categoryExists) {
-      throw new BadRequestException('Category already exists!');
-    }
-
     const userExists = await this.usersRepository.findById(userId);
 
     if (!userExists) {
-      throw new BadRequestException('User not exists!');
+      throw new NotFoundException('User not exists!');
+    }
+
+    const categoryUserExists =
+      await this.categoryRepository.findByUserDescription(userId, description);
+
+    if (categoryUserExists) {
+      throw new NotFoundException('Category already exists!');
     }
 
     const category = await this.categoryRepository.create({
