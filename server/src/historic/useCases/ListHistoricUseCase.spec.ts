@@ -2,15 +2,18 @@
 
 import { UsersInMemoryRepository } from '../../../test/repositories/UsersInMemoryRepository';
 import { HistoricRepositoryInMemory } from '../../../test/repositories/HistoricRepositoryInMemory';
+import { CategoryRepositoryInMemory } from '../../../test/repositories/CategoryRepositoryInMemory';
 import { CreateHistoricUseCase } from './CreateHistoricUseCase';
 import { ListHistoricUseCase } from './ListHistoricUseCase';
 
 import { makeUser } from '../../../test/factories/user-factory';
+import { makeCategory } from '../../../test/factories/category-factory';
 
 describe('List Historic a user', () => {
   it('should be able list historic a user', async () => {
     const historicRepositoryInMemory = new HistoricRepositoryInMemory();
     const usersRepositoryInMemory = new UsersInMemoryRepository();
+    const categoryRepositoryInMemory = new CategoryRepositoryInMemory();
 
     const user = await usersRepositoryInMemory.create(
       makeUser({
@@ -18,9 +21,14 @@ describe('List Historic a user', () => {
       }),
     );
 
+    const category = await categoryRepositoryInMemory.create(
+      makeCategory({ userId: user.id }),
+    );
+
     const createHistoricUseCase = new CreateHistoricUseCase(
       historicRepositoryInMemory,
       usersRepositoryInMemory,
+      categoryRepositoryInMemory,
     );
 
     await createHistoricUseCase.execute({
@@ -28,6 +36,7 @@ describe('List Historic a user', () => {
       type: 'Variable',
       isExit: true,
       userId: user.id,
+      categoryId: category.id,
       value: 60.0,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -38,6 +47,7 @@ describe('List Historic a user', () => {
       type: 'Variable',
       isExit: false,
       userId: user.id,
+      categoryId: category.id,
       value: 2000.0,
       createdAt: new Date(),
       updatedAt: new Date(),

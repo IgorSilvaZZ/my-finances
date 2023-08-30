@@ -14,6 +14,7 @@ export class CategoryRepositoryInMemory implements CategoryRepository {
   async create({
     description,
     userId,
+    icon,
     createdAt,
     updatedAt,
   }: CreateCategoryDTO): Promise<CategoryPrisma> {
@@ -21,6 +22,7 @@ export class CategoryRepositoryInMemory implements CategoryRepository {
       id: randomUUID(),
       description,
       userId,
+      icon,
       createdAt: createdAt ? createdAt : new Date(),
       updatedAt: createdAt ? updatedAt : new Date(),
     };

@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
 
 export class CreateCategoryDTO {
-    description: string;
-    userId: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+  description: string;
+  userId: string;
+  icon?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

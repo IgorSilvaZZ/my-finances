@@ -13,7 +13,7 @@ export class CreateCategoryUseCase {
     private categoryRepository: CategoryRepository,
   ) {}
 
-  async execute({ description, userId }: CreateCategoryDTO) {
+  async execute({ description, userId, icon }: CreateCategoryDTO) {
     const userExists = await this.usersRepository.findById(userId);
 
     if (!userExists) {
@@ -27,9 +27,12 @@ export class CreateCategoryUseCase {
       throw new NotFoundException('Category already exists!');
     }
 
+    const iconCategory = icon ? icon : 'Other';
+
     const category = await this.categoryRepository.create({
       description,
       userId,
+      icon: iconCategory,
     });
 
     return category;
