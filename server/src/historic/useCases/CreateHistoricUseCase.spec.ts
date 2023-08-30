@@ -70,7 +70,13 @@ describe('Create Historic', () => {
   });
 
   it('should not be able create historic category not exists', async () => {
-    const user = await usersRepositoryInMemory.create(makeUser());
+    const user = await usersRepositoryInMemory.create(
+      makeUser(
+        makeUser({
+          balance: 1000.0,
+        }),
+      ),
+    );
 
     expect(() => {
       return createHistoricUseCase.execute({

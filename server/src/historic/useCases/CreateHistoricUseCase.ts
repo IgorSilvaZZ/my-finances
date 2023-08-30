@@ -32,7 +32,9 @@ export class CreateHistoricUseCase {
       throw new NotFoundException('User not exists!');
     }
 
-    const categoryExists = this.categoryRepository.findById(data.categoryId);
+    const categoryExists = await this.categoryRepository.findById(
+      data.categoryId,
+    );
 
     if (!categoryExists) {
       throw new NotFoundException('Category not exists!');

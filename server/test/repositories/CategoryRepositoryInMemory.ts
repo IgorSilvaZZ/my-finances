@@ -21,8 +21,8 @@ export class CategoryRepositoryInMemory implements CategoryRepository {
       id: randomUUID(),
       description,
       userId,
-      createdAt,
-      updatedAt,
+      createdAt: createdAt ? createdAt : new Date(),
+      updatedAt: createdAt ? updatedAt : new Date(),
     };
 
     this.categories.push(data);
@@ -31,6 +31,10 @@ export class CategoryRepositoryInMemory implements CategoryRepository {
   }
   async findById(id: string): Promise<CategoryPrisma> {
     const category = this.categories.find((category) => category.id === id);
+
+    if (!category) {
+      return null;
+    }
 
     return PrismaCategoryMapper.toPrisma(category);
   }
@@ -42,6 +46,10 @@ export class CategoryRepositoryInMemory implements CategoryRepository {
       (category) =>
         category.userId === userId && category.description === description,
     );
+
+    if (!category) {
+      return null;
+    }
 
     return PrismaCategoryMapper.toPrisma(category);
   }
