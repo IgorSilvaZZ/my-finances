@@ -11,6 +11,7 @@ export class PrismaHistoricMapper {
       type: historic.type,
       isExit: historic.isExit,
       userId: historic.userId,
+      categoryId: historic.categoryId,
       createdAt: historic.createdAt,
       updatedAt: historic.updatedAt,
     };

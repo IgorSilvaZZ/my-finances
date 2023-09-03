@@ -7,6 +7,8 @@ import { UsersRepository } from '../users/repositories/UsersRepository';
 import { UsersPrismaRepository } from './repositories/UsersPrismaRepository';
 import { HistoricRepository } from '../historic/repositories/HistoricRepository';
 import { HistoricPrismaRepository } from './repositories/HistoricPrismaRepository';
+import { CategoryRepository } from '../categories/repositories/CategoryRepository';
+import { CategoryPrismaRepository } from './repositories/CategoryPrismaRepository';
 
 @Module({
   providers: [
@@ -16,10 +18,14 @@ import { HistoricPrismaRepository } from './repositories/HistoricPrismaRepositor
       useClass: UsersPrismaRepository,
     },
     {
+      provide: CategoryRepository,
+      useClass: CategoryPrismaRepository,
+    },
+    {
       provide: HistoricRepository,
       useClass: HistoricPrismaRepository,
     },
   ],
-  exports: [UsersRepository, HistoricRepository],
+  exports: [UsersRepository, HistoricRepository, CategoryRepository],
 })
 export class DatabaseModule {}

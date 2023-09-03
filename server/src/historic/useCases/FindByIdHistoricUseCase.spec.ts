@@ -20,6 +20,7 @@ describe('Find By Id Historic', () => {
   it('should be able list unique historic with id', async () => {
     const newHistoric = await historicRepositoryInMemory.create({
       description: 'Pix Amigo',
+      categoryId: uuid(),
       type: 'Variable',
       isExit: false,
       userId: uuid(),
