@@ -1,19 +1,25 @@
 /* eslint-disable prettier/prettier */
 
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, Injectable } from '@nestjs/common';
 
 import { UsersRepository } from '../../users/repositories/UsersRepository';
 import { CategoryRepository } from '../repositories/CategoryRepository';
-
 import { CreateCategoryDTO } from '../dtos/CreateCategoryDTO';
 
+import { Replace } from '../../helpers/Replace';
+
+@Injectable()
 export class CreateCategoryUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private categoryRepository: CategoryRepository,
   ) {}
 
-  async execute({ description, userId, icon }: CreateCategoryDTO) {
+  async execute({
+    description,
+    userId,
+    icon,
+  }: Replace<CreateCategoryDTO, { icon?: string }>) {
     const userExists = await this.usersRepository.findById(userId);
 
     if (!userExists) {

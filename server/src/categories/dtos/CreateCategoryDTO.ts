@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 
-export class CreateCategoryDTO {
+export interface CreateCategoryDTO {
   description: string;
   userId: string;
-  icon?: string;
+  icon: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

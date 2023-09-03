@@ -18,11 +18,11 @@ export class AuthenticateUserUseCase {
     const userExists = await this.usersRepository.findByEmail(email);
 
     if (!userExists) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Email/Password Incorrect');
     }
 
     if (!(await compare(password, userExists.password))) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Email/Password Incorrect');
     }
 
     const token = await this.jwtService.signAsync({ sub: userExists.id });
