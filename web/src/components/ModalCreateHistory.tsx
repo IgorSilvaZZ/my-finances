@@ -8,7 +8,7 @@ import * as Checkbox from "@radix-ui/react-checkbox";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import numeral from "numeral";
 
-import { Check, Plus, X, Question } from "@phosphor-icons/react";
+import { Check, Plus, X, Question, ArrowLeft } from "@phosphor-icons/react";
 
 import { selectUser, usersActions } from "@/store/users/user.slice";
 import { api } from "../lib/axios";
@@ -40,6 +40,8 @@ export const ModalCreateHistory = ({
   } as INewHistory);
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [viewCreateCategory, setViewCreateCategory] = useState(false);
+  const [newCategoryDescription, setNewCategoryDescription] = useState('');
 
   function handleOpenModal() {
     setModalOpen(!modalOpen);
@@ -130,6 +132,51 @@ export const ModalCreateHistory = ({
     }
   }
 
+  async function handleSubmitNewCategory(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const categorySchema = yup.object().shape({
+      description: yup.string().required("Digite o nome da categoria para continuar!").min(4, "O nome da categoria deve ter 4 caracteres no minimo para prosseguir!")
+    });
+
+    const bodyNewCategory = {
+      description: newCategoryDescription
+    };
+
+    try {
+      
+      await categorySchema.validate(bodyNewCategory,  { abortEarly: false });
+
+      try {
+        
+        await api.post('/categories', bodyNewCategory);
+
+        toast.success("Categoria criada com sucesso!");
+
+        setViewCreateCategory(false);
+
+      } catch (error: any) {
+        if (error.response) {
+          if (error.response.status === 400) {
+            toast.error(error.response.data.message);
+          } else if (error.response.status === 500) {
+            console.log(
+              `Erro interno no servidor! Contate o suporte para mais informações!`
+            );
+          }
+        }
+      }
+
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        const [ firstMessage ] = error.inner;
+
+        return toast.error(String(firstMessage.message));
+      }
+    }
+
+  }
+
   return (
     <Dialog.Root open={modalOpen} onOpenChange={handleOpenModal}>
       <Dialog.Trigger
@@ -144,15 +191,16 @@ export const ModalCreateHistory = ({
         <Dialog.Overlay className='w-screen h-screen bg-black/80 fixed inset-0' />
 
         <Dialog.Content className='absolute p-10 bg-zinc-900 rounded-2xl w-full max-w-md top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
-          <Dialog.Close className='absolute right-6 top-6 rounded-lg text-violet-600 transition-colors hover:text-violet-800'>
+          <Dialog.Close onClick={() => setViewCreateCategory(false)} className='absolute right-6 top-6 rounded-lg text-violet-600 transition-colors hover:text-violet-800'>
             <X size={24} arial-label='Fechar' />
           </Dialog.Close>
 
           <Dialog.Title className='text-xl leading-tight text-white font-semibold'>
-            Adicionar nova Transação
+            {!viewCreateCategory ? "Adicionar nova Transação" : "Adiciona uma nova Categoria"}
           </Dialog.Title>
 
-          <form className='w-full flex flex-col mt-6' onSubmit={handleSubmit}>
+          {!viewCreateCategory ? (
+            <form className='w-full flex flex-col mt-6' onSubmit={handleSubmit}>
             <label
               htmlFor='description'
               className='font-semibold leading-tight text-zinc-500'
@@ -191,6 +239,26 @@ export const ModalCreateHistory = ({
                 })
               }
             />
+            
+            <label
+              htmlFor='categoryId'
+              className='font-semibold leading-tight text-zinc-500 mt-4'
+            >
+              Selecione a categoria da transação
+            </label>
+
+            <select
+              name='categoryId'
+              className='p-2 rounded-lg bg-zinc-800 text-white outline-none border-2 border-zinc-800 mt-4'
+            >
+              <option value='viagem'>Viagem</option>
+              <option value='viagem'>Viagem</option>
+            </select>
+
+            <span className='text-zinc-600 text-xs mt-2 font-medium'>
+              Não tem a categoria que gostaria?{" "}
+              <button onClick={() => setViewCreateCategory(true)} className='text-violet-500 font-bold cursor-pointer outline-none border-none bg-none'>Crie aqui!</button>
+            </span>
 
             <div className='flex items-center justify-between w-full mt-6'>
               <select
@@ -253,6 +321,44 @@ export const ModalCreateHistory = ({
               Salvar
             </button>
           </form>
+          ): (
+            <form className="flex flex-col justify-center gap-4 w-full mt-5" onSubmit={handleSubmitNewCategory}>
+              <button className="text-violet-600" onClick={() => setViewCreateCategory(false)}>
+                <ArrowLeft size={22} />
+              </button>
+
+              <label
+              htmlFor='description'
+              className='font-semibold leading-tight text-zinc-500'
+            >
+              Qual vai ser o nome da nova categoria?
+            </label>
+
+            <input
+              type='text'
+              id='category'
+              name='category'
+              value={newCategoryDescription}
+              placeholder='ex.: Viagem, Domestico, Lazer...'
+              className='p-4 rounded-lg mt-3 bg-zinc-800 text-white placeholder:text-zinc-400 focus:outline focus:ring-2 focus:ring-violet-600'
+              autoFocus
+              onChange={e => setNewCategoryDescription(e.target.value)}
+            />
+
+            <span className='text-zinc-600 text-xs mt-2 font-medium'>
+              Esse nome é totalmente livre para colocar o que desejar, as categorias são separadas por usuarios. Então personalize da forma que você quiser.
+            </span>
+
+            <button
+              type='submit'
+              className='mt-6 rounded-lg p-3 flex gap-3 items-center justify-center font-semibold bg-violet-800 text-white transition-colors hover:bg-violet-900'
+            >
+              <Check size={20} weight='bold' />
+              Criar
+            </button>
+            </form>
+          )}
+          
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
