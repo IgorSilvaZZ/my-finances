@@ -4,29 +4,36 @@ import { toast } from "react-toastify";
 
 import * as yup from "yup";
 import * as Dialog from "@radix-ui/react-dialog";
-import * as Checkbox from "@radix-ui/react-checkbox";
-import * as Tooltip from "@radix-ui/react-tooltip";
 import numeral from "numeral";
 
-import { Check, Plus, X, Question } from "@phosphor-icons/react";
+import { Plus, X } from "@phosphor-icons/react";
+
+import { CreateHistoryForm } from "./forms/CreateHistoryForm";
+import { CreateCategoryForm } from "./forms/CreateCategoryForm";
+import { ICategoriesUser } from "@/pages/home";
 
 import { selectUser, usersActions } from "@/store/users/user.slice";
 import { api } from "../lib/axios";
 
 interface IModalCreateHistoryProps {
+  categoriesUser: ICategoriesUser[];
   getHistories(): Promise<void>;
+  getCategoriesUser(): Promise<void>;
 }
 
-interface INewHistory {
+export interface INewHistory {
   value: number;
   valueFormatted?: string;
   description: string;
+  categoryId: string;
   type: string;
   isExit: boolean;
 }
 
 export const ModalCreateHistory = ({
+  categoriesUser,
   getHistories,
+  getCategoriesUser,
 }: IModalCreateHistoryProps) => {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
@@ -39,7 +46,10 @@ export const ModalCreateHistory = ({
     type: "",
   } as INewHistory);
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [viewCreateCategory, setViewCreateCategory] = useState<boolean>(false);
+  const [newCategoryDescription, setNewCategoryDescription] =
+    useState<string>("");
 
   function handleOpenModal() {
     setModalOpen(!modalOpen);
@@ -48,12 +58,17 @@ export const ModalCreateHistory = ({
       description: "",
       value: 0,
       valueFormatted: "0",
+      categoryId: "",
       isExit: false,
       type: "",
     });
   }
 
-  function handleFormHistory(event: React.FormEvent<HTMLInputElement>) {
+  function handleFormHistory(
+    event:
+      | React.FormEvent<HTMLInputElement>
+      | React.FormEvent<HTMLSelectElement>
+  ) {
     setFormNewHistory({
       ...formNewHistory,
       [event.currentTarget.name]: event.currentTarget.value,
@@ -74,6 +89,9 @@ export const ModalCreateHistory = ({
       type: yup
         .string()
         .required("Selecione pelo menos tipo de transação para continuar!"),
+      categoryId: yup
+        .string()
+        .required("Seleciona a categoria para continuar!"),
     });
 
     try {
@@ -103,6 +121,7 @@ export const ModalCreateHistory = ({
 
         setFormNewHistory({
           description: "",
+          categoryId: "",
           value: 0,
           valueFormatted: "0",
           isExit: false,
@@ -110,6 +129,60 @@ export const ModalCreateHistory = ({
         });
 
         getHistories();
+      } catch (error: any) {
+        if (error.response) {
+          if (error.response.status === 400) {
+            toast.error(error.response.data.message);
+          } else if (error.response.status === 500) {
+            console.log(
+              `Erro interno no servidor! Contate o suporte para mais informações!`
+            );
+          }
+        }
+      }
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        const [firstMessage] = error.inner;
+
+        return toast.error(String(firstMessage.message));
+      }
+    }
+  }
+
+  async function handleSubmitNewCategory(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+
+    const categorySchema = yup.object().shape({
+      description: yup
+        .string()
+        .required("Digite o nome da categoria para continuar!")
+        .min(
+          4,
+          "O nome da categoria deve ter 4 caracteres no minimo para prosseguir!"
+        ),
+    });
+
+    const bodyNewCategory = {
+      description: newCategoryDescription,
+    };
+
+    try {
+      await categorySchema.validate(bodyNewCategory, { abortEarly: false });
+
+      try {
+        await api.post("/categories", bodyNewCategory, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+
+        toast.success("Categoria criada com sucesso!");
+
+        setViewCreateCategory(false);
+
+        getCategoriesUser();
       } catch (error: any) {
         if (error.response) {
           if (error.response.status === 400) {
@@ -144,115 +217,36 @@ export const ModalCreateHistory = ({
         <Dialog.Overlay className='w-screen h-screen bg-black/80 fixed inset-0' />
 
         <Dialog.Content className='absolute p-10 bg-zinc-900 rounded-2xl w-full max-w-md top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
-          <Dialog.Close className='absolute right-6 top-6 rounded-lg text-violet-600 transition-colors hover:text-violet-800'>
+          <Dialog.Close
+            onClick={() => setViewCreateCategory(false)}
+            className='absolute right-6 top-6 rounded-lg text-violet-600 transition-colors hover:text-violet-800'
+          >
             <X size={24} arial-label='Fechar' />
           </Dialog.Close>
 
           <Dialog.Title className='text-xl leading-tight text-white font-semibold'>
-            Adicionar nova Transação
+            {!viewCreateCategory
+              ? "Adicionar nova Transação"
+              : "Adiciona uma nova Categoria"}
           </Dialog.Title>
 
-          <form className='w-full flex flex-col mt-6' onSubmit={handleSubmit}>
-            <label
-              htmlFor='description'
-              className='font-semibold leading-tight text-zinc-500'
-            >
-              Qual vai ser a descrição?
-            </label>
-
-            <input
-              type='text'
-              id='description'
-              name='description'
-              value={formNewHistory.description}
-              placeholder='ex.: Mercadinho, Salario, Mercado...'
-              className='p-4 rounded-lg mt-3 bg-zinc-800 text-white placeholder:text-zinc-400 focus:outline focus:ring-2 focus:ring-violet-600'
-              autoFocus
-              onChange={handleFormHistory}
+          {!viewCreateCategory ? (
+            <CreateHistoryForm
+              formNewHistory={formNewHistory}
+              categoriesUser={categoriesUser}
+              handleFormHistory={handleFormHistory}
+              handleSubmit={handleSubmit}
+              setFormNewHistory={setFormNewHistory}
+              setViewCreateCategory={setViewCreateCategory}
             />
-
-            <label
-              htmlFor='value'
-              className='font-semibold leading-tight text-zinc-500 mt-4'
-            >
-              Qual valor da transação?
-            </label>
-            <input
-              type='text'
-              id='value'
-              name='valueFormatted'
-              value={formNewHistory.valueFormatted}
-              placeholder='500.00, 30.00...'
-              className='p-4 rounded-lg mt-3 bg-zinc-800 text-white placeholder:text-zinc-400 focus:outline focus:ring-2 focus:ring-violet-600'
-              onChange={(e) =>
-                setFormNewHistory({
-                  ...formNewHistory,
-                  valueFormatted: numeral(e.target.value).format("0,0"),
-                })
-              }
+          ) : (
+            <CreateCategoryForm
+              newCategoryDescription={newCategoryDescription}
+              setNewCategoryDescription={setNewCategoryDescription}
+              setViewCreateCategory={setViewCreateCategory}
+              handleSubmitNewCategory={handleSubmitNewCategory}
             />
-
-            <div className='flex items-center justify-between w-full mt-6'>
-              <select
-                name='type'
-                className='p-2 rounded-lg bg-zinc-800 text-white w-60 outline-none border-2 border-zinc-800'
-                value={formNewHistory.type}
-                onChange={(e) =>
-                  setFormNewHistory({ ...formNewHistory, type: e.target.value })
-                }
-              >
-                <option value='select' selected>
-                  Selecione o Tipo
-                </option>
-                <option value='variable'>Variavel</option>
-                <option value='fixe'>Fixo</option>
-              </select>
-
-              <Tooltip.Provider>
-                <Tooltip.Root>
-                  <Tooltip.Trigger>
-                    <Question size={20} className='text-violet-500 font-bold' />
-                  </Tooltip.Trigger>
-                  <Tooltip.Portal>
-                    <Tooltip.Content className='w-52 rounded-md px-3 py-4 text-sm text-violet-700 bg-white'>
-                      <b>Fixo: </b> Será descontado do seu saldo todo mês <br />
-                      <b>Variavel: </b> Um gasto que nem sempre será descontado
-                      e pode ter ou não em um mês
-                      <Tooltip.Arrow />
-                    </Tooltip.Content>
-                  </Tooltip.Portal>
-                </Tooltip.Root>
-              </Tooltip.Provider>
-
-              <Checkbox.Root
-                className='flex items-center gap-3'
-                onCheckedChange={() =>
-                  setFormNewHistory({
-                    ...formNewHistory,
-                    isExit: !formNewHistory.isExit,
-                  })
-                }
-              >
-                <div className='h-8 w-8 rounded-lg flex items-center justify-center bg-zinc-900 border-2 border-zinc-800'>
-                  <Checkbox.Indicator>
-                    <Check size={20} className='text-violet-400 font-bold' />
-                  </Checkbox.Indicator>
-                </div>
-
-                <span className=' text-zinc-300 font-semibold leading-tight'>
-                  Saida
-                </span>
-              </Checkbox.Root>
-            </div>
-
-            <button
-              type='submit'
-              className='mt-6 rounded-lg p-3 flex gap-3 items-center justify-center font-semibold bg-violet-800 text-white transition-colors hover:bg-violet-900'
-            >
-              <Check size={20} weight='bold' />
-              Salvar
-            </button>
-          </form>
+          )}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
