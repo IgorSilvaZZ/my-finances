@@ -79,9 +79,10 @@ export const CreateHistoryForm = ({
       <select
         name='categoryId'
         className='p-2 rounded-lg bg-zinc-800 text-white outline-none border-2 border-zinc-800 mt-4'
+        onChange={handleFormHistory}
       >
         {categoriesUser.map(({ description, id }) => (
-          <option key={id} value={description}>
+          <option key={id} value={id}>
             {description}
           </option>
         ))}

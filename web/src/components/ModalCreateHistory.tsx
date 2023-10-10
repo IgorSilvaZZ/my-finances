@@ -18,12 +18,14 @@ import { api } from "../lib/axios";
 interface IModalCreateHistoryProps {
   categoriesUser: ICategoriesUser[];
   getHistories(): Promise<void>;
+  getCategoriesUser(): Promise<void>;
 }
 
 export interface INewHistory {
   value: number;
   valueFormatted?: string;
   description: string;
+  categoryId: string;
   type: string;
   isExit: boolean;
 }
@@ -31,6 +33,7 @@ export interface INewHistory {
 export const ModalCreateHistory = ({
   categoriesUser,
   getHistories,
+  getCategoriesUser,
 }: IModalCreateHistoryProps) => {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
@@ -55,6 +58,7 @@ export const ModalCreateHistory = ({
       description: "",
       value: 0,
       valueFormatted: "0",
+      categoryId: "",
       isExit: false,
       type: "",
     });
@@ -85,6 +89,9 @@ export const ModalCreateHistory = ({
       type: yup
         .string()
         .required("Selecione pelo menos tipo de transação para continuar!"),
+      categoryId: yup
+        .string()
+        .required("Seleciona a categoria para continuar!"),
     });
 
     try {
@@ -114,6 +121,7 @@ export const ModalCreateHistory = ({
 
         setFormNewHistory({
           description: "",
+          categoryId: "",
           value: 0,
           valueFormatted: "0",
           isExit: false,
@@ -173,7 +181,8 @@ export const ModalCreateHistory = ({
         toast.success("Categoria criada com sucesso!");
 
         setViewCreateCategory(false);
-        // Colocar o get de categorias do usuario aqui!!
+
+        getCategoriesUser();
       } catch (error: any) {
         if (error.response) {
           if (error.response.status === 400) {

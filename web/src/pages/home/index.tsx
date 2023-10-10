@@ -93,6 +93,7 @@ export default function Home() {
             <ModalCreateHistory
               categoriesUser={categoriesUser}
               getHistories={getHistories}
+              getCategoriesUser={getCategoriesUser}
             />
           </div>
 
