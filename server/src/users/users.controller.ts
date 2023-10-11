@@ -27,7 +27,7 @@ export class UsersController {
 
   @Post('/')
   async createUser(@Body() createUserDTO: CreateUserDTO) {
-    const user = await this.createUserUseCase.execute(createUserDTO);
+    const { user } = await this.createUserUseCase.execute(createUserDTO);
 
     return user;
   }

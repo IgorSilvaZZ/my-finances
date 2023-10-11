@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UnauthorizedException } from '@nestjs/common';
 
 import { UsersInMemoryRepository } from '../../../test/repositories/UsersInMemoryRepository';
+import { CategoryRepositoryInMemory } from '../../../test/repositories/CategoryRepositoryInMemory';
 import { makeUser } from '../../../test/factories/user-factory';
 
 import { AuthenticateUserUseCase } from './AuthenticateUserUseCase';
@@ -12,6 +13,7 @@ import { CreateUserUseCase } from './CreateUserUseCase';
 import { jwtConstants } from '../constants/auth.constant';
 
 let usersRepositoryInMemory: UsersInMemoryRepository;
+let categoryRepositoryInMemory: CategoryRepositoryInMemory;
 let createUserUseCase: CreateUserUseCase;
 let authenticateUserUseCase: AuthenticateUserUseCase;
 let jwtService: JwtService;
@@ -19,7 +21,8 @@ let jwtService: JwtService;
 describe('Authentication User', () => {
   beforeEach(() => {
     usersRepositoryInMemory = new UsersInMemoryRepository();
-    createUserUseCase = new CreateUserUseCase(usersRepositoryInMemory);
+    categoryRepositoryInMemory = new CategoryRepositoryInMemory();
+    createUserUseCase = new CreateUserUseCase(usersRepositoryInMemory, categoryRepositoryInMemory);
     jwtService = new JwtService(jwtConstants.options);
     authenticateUserUseCase = new AuthenticateUserUseCase(
       usersRepositoryInMemory,
