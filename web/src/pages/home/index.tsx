@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-import numeral from "numeral";
-import dayjs from "dayjs";
+
 import { toast } from "react-toastify";
 
 import { CardHistory } from "@/components/CardHistory";
 import { NavBar } from "@/components/NavBar";
+import { Header } from "@/components/Header";
 
 import { selectUser } from "../../store/users/user.slice";
 
@@ -73,19 +73,7 @@ export default function Home() {
       <NavBar />
 
       <main className='flex flex-col items-center gap-4 mx-auto max-w-[1100px] mt-5'>
-        <div className='flex items-center justify-center flex-col gap-3 w-full h-52 bg-zinc-800 rounded-lg'>
-          <p className='text-base text-zinc-500 font-semibold'>
-            {dayjs().format("dddd, DD [de] MMMM [de] YYYY")}
-          </p>
-          <p className='text-2xl text-white font-bold'>
-            Bem vindo, {user.name}
-          </p>
-          <div className='h-12 w-[450px] bg-violet-600 flex items-center justify-center gap-3 rounded-lg mt-4'>
-            <span className='text-white text-lg font-semibold'>
-              Saldo Atual: R$ {numeral(user.balance).format("0,0")}
-            </span>
-          </div>
-        </div>
+        <Header />
 
         <div className='flex flex-col items-center gap-2 w-full h-80 overflow-x-hidden bg-zinc-800 rounded-lg'>
           <div className='flex w-full h-5 items-center justify-between text-sm font-semibold px-4 mt-2'>
