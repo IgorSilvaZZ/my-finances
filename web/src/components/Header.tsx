@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 import { useSelector } from "react-redux";
 import numeral from "numeral";
 import dayjs from "dayjs";
@@ -10,6 +12,24 @@ export const Header = () => {
   const user = useSelector(selectUser);
 
   const years = getYears();
+
+  const nameTransaction = useRef(null);
+  const nameCategory = useRef(null);
+  const year = useRef(null);
+  const month = useRef(null);
+
+  async function getSearch(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const dataSearch = {
+      nameTransaction,
+      nameCategory,
+      year,
+      month
+    };
+
+    console.log(dataSearch);    
+  }
 
   return (
     <div className='flex items-center justify-center gap-3 w-full h-52 bg-zinc-800 rounded-lg'>
@@ -26,11 +46,12 @@ export const Header = () => {
       </div>
 
       <div className='flex flex-col gap-3 w-1/2 px-5 justify-center items-center rounded-lg'>
-        <div className='flex items-center gap-3 h-12'>
+        <div className='flex items-center gap-3 h-12 w-full'>
           <input
             type='text'
-            className='bg-zinc-700 rounded-lg text-white w-96 p-3 h-11 border-none outline-none font-bold'
+            className='bg-zinc-700 rounded-lg text-white w-full p-3 h-11 border-none outline-none font-bold'
             placeholder='Nome da transação'
+            ref={nameTransaction}
           />
 
           <button className='w-12 p-3 h-11 flex items-center justify-center rounded-xl bg-violet-600'>
@@ -38,8 +59,8 @@ export const Header = () => {
           </button>
         </div>
 
-        <div className='flex items-center gap-2 h-20 border'>
-          <div className='flex flex-col gap-3 w-52'>
+        <div className='flex items-center gap-2 justify-between h-20 w-full'>
+          <div className='flex flex-col gap-3 w-40'>
             <label
               htmlFor='categoryId-search'
               className='font-semibold leading-tight text-zinc-500'
@@ -49,6 +70,7 @@ export const Header = () => {
             <select
               id='categoryId-search'
               className='p-2 rounded-lg bg-zinc-700 text-white outline-none border-2 border-zinc-800'
+              ref={nameCategory}
             >
               <option value=''>Viagem</option>
               <option value=''>Lazer</option>
@@ -56,7 +78,7 @@ export const Header = () => {
             </select>
           </div>
 
-          <div className='flex flex-col gap-3 w-52'>
+          <div className='flex flex-col gap-3 w-40'>
             <label
               htmlFor='categoryId-search'
               className='font-semibold leading-tight text-zinc-500'
@@ -66,6 +88,7 @@ export const Header = () => {
             <select
               id='categoryId-search'
               className='p-2 rounded-lg bg-zinc-700 text-white outline-none border-2 border-zinc-800'
+              ref={year}
             >
               {years.map((year) => (
                 <option value={year}>{year}</option>
@@ -73,7 +96,7 @@ export const Header = () => {
             </select>
           </div>
 
-          <div className='flex flex-col gap-3 w-52'>
+          <div className='flex flex-col gap-3 w-40'>
             <label
               htmlFor='categoryId-search'
               className='font-semibold leading-tight text-zinc-500'
@@ -83,6 +106,7 @@ export const Header = () => {
             <select
               id='categoryId-search'
               className='p-2 rounded-lg bg-zinc-700 text-white outline-none border-2 border-zinc-800'
+              ref={month}
             >
               {months.map(({ title, value }) => (
                 <>
