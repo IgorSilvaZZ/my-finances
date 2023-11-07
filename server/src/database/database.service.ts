@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { OnModuleInit, INestApplication, Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 

@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { UsersInMemoryRepository } from '../../../test/repositories/UsersInMemoryRepository';
 import { HistoricRepositoryInMemory } from '../../../test/repositories/HistoricRepositoryInMemory';
 import { CategoryRepositoryInMemory } from '../../../test/repositories/CategoryRepositoryInMemory';
@@ -10,7 +8,7 @@ import { makeUser } from '../../../test/factories/user-factory';
 import { makeCategory } from '../../../test/factories/category-factory';
 
 describe('List Historic a user', () => {
-  it('should be able list historic a user', async () => {
+  it('should be able list all historic a user', async () => {
     const historicRepositoryInMemory = new HistoricRepositoryInMemory();
     const usersRepositoryInMemory = new UsersInMemoryRepository();
     const categoryRepositoryInMemory = new CategoryRepositoryInMemory();
@@ -57,7 +55,7 @@ describe('List Historic a user', () => {
       historicRepositoryInMemory,
     );
 
-    const historicList = await listHistoricUseCase.execute(user.id);
+    const historicList = await listHistoricUseCase.execute({ userId: user.id });
 
     expect(historicList).toHaveLength(2);
   });

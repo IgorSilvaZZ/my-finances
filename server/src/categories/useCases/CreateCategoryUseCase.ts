@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { NotFoundException, Injectable } from '@nestjs/common';
 
 import { UsersRepository } from '../../users/repositories/UsersRepository';

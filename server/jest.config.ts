@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 export default {
   moduleFileExtensions: ['js', 'json', 'ts'],
   testRegex: '.*\\.spec\\.ts$',

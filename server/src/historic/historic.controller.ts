@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import {
   Controller,
   Get,
@@ -9,6 +7,7 @@ import {
   UseGuards,
   Param,
   Logger,
+  Query,
 } from '@nestjs/common';
 
 import { CreateHistoricUseCase } from './useCases/CreateHistoricUseCase';
@@ -49,10 +48,15 @@ export class HistoricController {
 
   @UseGuards(AuthGuard)
   @Get('/')
-  async listHistoricUser(@Request() request) {
+  async listHistoricUser(@Request() request, @Query() queryParams: any) {
     const userId = request.userId;
 
-    const listHistoric = await this.listHistoricUseCase.execute(userId);
+    const params = {
+      userId,
+      ...queryParams,
+    };
+
+    const listHistoric = await this.listHistoricUseCase.execute(params);
 
     return listHistoric;
   }

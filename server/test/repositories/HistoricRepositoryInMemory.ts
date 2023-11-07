@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { Historic as HistoricPrisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 
@@ -15,7 +13,7 @@ export class HistoricRepositoryInMemory implements HistoricRepository {
 
   async list(userId: string): Promise<HistoricPrisma[]> {
     const historicListUser = this.historic.filter(
-      (historic) => historic.userId === userId,
+      historic => historic.userId === userId,
     );
 
     return historicListUser.map(PrismaHistoricMapper.toPrisma);
@@ -49,7 +47,7 @@ export class HistoricRepositoryInMemory implements HistoricRepository {
   }
 
   async findById(id: string): Promise<HistoricPrisma> {
-    const historic = this.historic.find((historic) => historic.id === id);
+    const historic = this.historic.find(historic => historic.id === id);
 
     return historic;
   }

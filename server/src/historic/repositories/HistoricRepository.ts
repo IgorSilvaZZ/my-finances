@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { Historic as HistoricPrisma } from '@prisma/client';
 
 import { CreateHistoricDTO } from '../dtos/CreateHistoricDTO';

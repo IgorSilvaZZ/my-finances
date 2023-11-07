@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { JwtService } from '@nestjs/jwt';
 import { UnauthorizedException } from '@nestjs/common';
 
@@ -22,7 +20,10 @@ describe('Authentication User', () => {
   beforeEach(() => {
     usersRepositoryInMemory = new UsersInMemoryRepository();
     categoryRepositoryInMemory = new CategoryRepositoryInMemory();
-    createUserUseCase = new CreateUserUseCase(usersRepositoryInMemory, categoryRepositoryInMemory);
+    createUserUseCase = new CreateUserUseCase(
+      usersRepositoryInMemory,
+      categoryRepositoryInMemory,
+    );
     jwtService = new JwtService(jwtConstants.options);
     authenticateUserUseCase = new AuthenticateUserUseCase(
       usersRepositoryInMemory,

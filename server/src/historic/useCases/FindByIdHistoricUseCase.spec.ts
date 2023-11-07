@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { BadRequestException } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 

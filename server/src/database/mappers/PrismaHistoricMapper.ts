@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { IHistoric } from '../../historic/interfaces/Historic';
 
 export class PrismaHistoricMapper {

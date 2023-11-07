@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { Injectable } from '@nestjs/common';
 import { User as UserPrisma } from '@prisma/client';
 

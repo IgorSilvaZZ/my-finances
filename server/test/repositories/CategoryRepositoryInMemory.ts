@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { Category as CategoryPrisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 
@@ -32,7 +30,7 @@ export class CategoryRepositoryInMemory implements CategoryRepository {
     return PrismaCategoryMapper.toPrisma(data);
   }
   async findById(id: string): Promise<CategoryPrisma> {
-    const category = this.categories.find((category) => category.id === id);
+    const category = this.categories.find(category => category.id === id);
 
     if (!category) {
       return null;
@@ -45,7 +43,7 @@ export class CategoryRepositoryInMemory implements CategoryRepository {
     description: string,
   ): Promise<CategoryPrisma> {
     const category = this.categories.find(
-      (category) =>
+      category =>
         category.userId === userId && category.description === description,
     );
 
@@ -57,7 +55,7 @@ export class CategoryRepositoryInMemory implements CategoryRepository {
   }
   async listByUser(userId: string): Promise<CategoryPrisma[]> {
     const categoriesFindByUser = this.categories.filter(
-      (category) => category.userId === userId,
+      category => category.userId === userId,
     );
 
     return categoriesFindByUser.map(PrismaCategoryMapper.toPrisma);

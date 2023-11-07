@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { Category as CategoryPrisma } from '@prisma/client';
 import { CreateCategoryDTO } from '../dtos/CreateCategoryDTO';
 

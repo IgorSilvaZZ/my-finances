@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { NotFoundException } from '@nestjs/common';
 
 import { makeUser } from '../../../test/factories/user-factory';

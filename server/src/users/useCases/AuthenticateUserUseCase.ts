@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';

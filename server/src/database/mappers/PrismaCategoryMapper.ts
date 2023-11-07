@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { ICategory } from '../../categories/interfaces/Category';
 
 export class PrismaCategoryMapper {

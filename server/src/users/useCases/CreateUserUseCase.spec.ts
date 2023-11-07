@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { CategoryRepositoryInMemory } from '../../../test/repositories/CategoryRepositoryInMemory';
 import { UsersInMemoryRepository } from '../../../test/repositories/UsersInMemoryRepository';
 import { CreateUserDTO } from '../dtos/CreateUserDTO';
@@ -13,7 +11,10 @@ describe('Create User', () => {
   beforeEach(() => {
     usersRepositoryInMemory = new UsersInMemoryRepository();
     categoryRepositoryInMemory = new CategoryRepositoryInMemory();
-    createUserUseCase = new CreateUserUseCase(usersRepositoryInMemory, categoryRepositoryInMemory);
+    createUserUseCase = new CreateUserUseCase(
+      usersRepositoryInMemory,
+      categoryRepositoryInMemory,
+    );
   });
 
   it('should be able create a new user', async () => {
@@ -30,7 +31,7 @@ describe('Create User', () => {
     expect(usersRepositoryInMemory.users).toHaveLength(1);
   });
 
-  it("should be able create a new user with Other category created", async () => {
+  it('should be able create a new user with Other category created', async () => {
     const userData: CreateUserDTO = {
       name: 'User Test',
       email: 'test@email.com',
@@ -40,19 +41,18 @@ describe('Create User', () => {
 
     const { user, category } = await createUserUseCase.execute(userData);
 
-    expect(user).toHaveProperty("id");
+    expect(user).toHaveProperty('id');
     expect(categoryRepositoryInMemory.categories).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          userId: user.id, 
-          description: "Outros", 
-          icon: "Other", 
+          userId: user.id,
+          description: 'Outros',
+          icon: 'Other',
           id: category.id,
-          createdAt: category.createdAt, 
-          updatedAt: category.updatedAt
-        })
-      ])
-    )
+          createdAt: category.createdAt,
+          updatedAt: category.updatedAt,
+        }),
+      ]),
+    );
   });
-
 });
