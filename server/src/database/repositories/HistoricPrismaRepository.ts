@@ -5,12 +5,19 @@ import { CreateHistoricDTO } from '../../historic/dtos/CreateHistoricDTO';
 import { HistoricRepository } from '../../historic/repositories/HistoricRepository';
 import { PrismaService } from '../database.service';
 import { Replace } from '../../helpers/Replace';
+import { IListHistoric } from 'src/historic/interfaces/IListHistoric';
 
 @Injectable()
 export class HistoricPrismaRepository implements HistoricRepository {
   constructor(private prismaService: PrismaService) {}
 
-  async list(userId: string): Promise<HistoricPrisma[]> {
+  async list({
+    userId,
+    categoryId,
+    mouth,
+    description,
+    year,
+  }: IListHistoric): Promise<HistoricPrisma[]> {
     const historicList = await this.prismaService.historic.findMany({
       where: { userId },
     });
