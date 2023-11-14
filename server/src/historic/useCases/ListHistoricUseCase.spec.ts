@@ -141,7 +141,7 @@ describe('List Historic a user', () => {
     expect(historicList).toHaveLength(3);
   });
 
-  it.only('should be able list all historic filter only 2023 year', async () => {
+  it('should be able list all historic filter only 2023 year', async () => {
     const user = await usersRepositoryInMemory.create(
       makeUser({
         balance: 30000.0,
@@ -214,5 +214,133 @@ describe('List Historic a user', () => {
 
     expect(historicListYear2023).toHaveLength(2);
     expect(historicListYear2022).toHaveLength(2);
+  });
+
+  it('should be able list all historic filter only January month', async () => {
+    const user = await usersRepositoryInMemory.create(
+      makeUser({
+        balance: 30000.0,
+      }),
+    );
+
+    const category = await categoryRepositoryInMemory.create(
+      makeCategory({ userId: user.id }),
+    );
+
+    const createHistoricUseCase = getCreateUserHistoricUseCase();
+
+    await createHistoricUseCase.execute({
+      description: 'Spotify',
+      type: 'Fixe',
+      isExit: true,
+      userId: user.id,
+      categoryId: category.id,
+      value: 25.0,
+      createdAt: new Date('2023-01-25'),
+      updatedAt: new Date('2023-01-25'),
+    });
+
+    await createHistoricUseCase.execute({
+      description: 'Spotify',
+      type: 'Fixe',
+      isExit: true,
+      userId: user.id,
+      categoryId: category.id,
+      value: 25.0,
+      createdAt: new Date('2023-02-25'),
+      updatedAt: new Date('2023-02-25'),
+    });
+
+    await createHistoricUseCase.execute({
+      description: 'Geladeira',
+      type: 'Variable',
+      isExit: true,
+      userId: user.id,
+      categoryId: category.id,
+      value: 3500.0,
+      createdAt: new Date('2023-01-30'),
+      updatedAt: new Date(''),
+    });
+
+    const listHistoricUseCase = new ListHistoricUseCase(
+      historicRepositoryInMemory,
+    );
+
+    const historicListMonthJanuary = await listHistoricUseCase.execute({
+      userId: user.id,
+      mouth: '1',
+    });
+
+    expect(historicListMonthJanuary).toHaveLength(2);
+  });
+
+  it('should be able list all historic filter March month and 2023 year', async () => {
+    const user = await usersRepositoryInMemory.create(
+      makeUser({
+        balance: 30000.0,
+      }),
+    );
+
+    const category = await categoryRepositoryInMemory.create(
+      makeCategory({ userId: user.id }),
+    );
+
+    const createHistoricUseCase = getCreateUserHistoricUseCase();
+
+    await createHistoricUseCase.execute({
+      description: 'Celular',
+      type: 'Variable',
+      isExit: true,
+      userId: user.id,
+      categoryId: category.id,
+      value: 2500.0,
+      createdAt: new Date('2023-03-12T10:00:00'),
+      updatedAt: new Date('2023-03-12T10:00:00'),
+    });
+
+    await createHistoricUseCase.execute({
+      description: 'Chip celular',
+      type: 'Variable',
+      isExit: true,
+      userId: user.id,
+      categoryId: category.id,
+      value: 15.0,
+      createdAt: new Date('2023-03-12T10:00:00'),
+      updatedAt: new Date('2023-03-12T10:00:00'),
+    });
+
+    await createHistoricUseCase.execute({
+      description: 'Tenis',
+      type: 'Variable',
+      isExit: true,
+      userId: user.id,
+      categoryId: category.id,
+      value: 350.0,
+      createdAt: new Date('2023-03-20T10:00:00'),
+      updatedAt: new Date('2023-03-20T10:00:00'),
+    });
+
+    await createHistoricUseCase.execute({
+      description: 'Pneus Carro',
+      type: 'Variable',
+      isExit: true,
+      userId: user.id,
+      categoryId: category.id,
+      value: 2500.0,
+      createdAt: new Date('2023-04-01T10:00:00'),
+      updatedAt: new Date('2023-04-01T10:00:00'),
+    });
+
+    const listHistoricUseCase = new ListHistoricUseCase(
+      historicRepositoryInMemory,
+    );
+
+    const historicListMonthAndYear = await listHistoricUseCase.execute({
+      userId: user.id,
+      mouth: '3',
+      year: '2023',
+    });
+
+    expect(historicListMonthAndYear).toHaveLength(3);
   });
 });
