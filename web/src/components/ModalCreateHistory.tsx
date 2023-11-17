@@ -10,14 +10,14 @@ import { Plus, X } from "@phosphor-icons/react";
 
 import { CreateHistoryForm } from "./forms/CreateHistoryForm";
 import { CreateCategoryForm } from "./forms/CreateCategoryForm";
-import { ICategoriesUser } from "@/pages/home";
+import { ICategoriesUser, IParamsHistoricList } from "@/pages/home";
 
 import { selectUser, usersActions } from "@/store/users/user.slice";
 import { api } from "../lib/axios";
 
 interface IModalCreateHistoryProps {
   categoriesUser: ICategoriesUser[];
-  getHistories(): Promise<void>;
+  getHistories(params: IParamsHistoricList): Promise<void>;
   getCategoriesUser(): Promise<void>;
 }
 
@@ -128,7 +128,8 @@ export const ModalCreateHistory = ({
           type: "",
         });
 
-        getHistories();
+        // Vai ser alterado para colocar o array de filtros que vai estar no redux
+        getHistories({});
       } catch (error: any) {
         if (error.response) {
           if (error.response.status === 400) {

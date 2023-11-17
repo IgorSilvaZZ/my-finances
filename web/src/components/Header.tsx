@@ -25,10 +25,11 @@ export const Header = () => {
       nameTransaction,
       nameCategory,
       year,
-      month
+      month,
     };
 
-    console.log(dataSearch);    
+    // Colocar os valores no redux
+    console.log(dataSearch);
   }
 
   return (

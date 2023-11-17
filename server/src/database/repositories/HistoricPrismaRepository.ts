@@ -18,8 +18,22 @@ export class HistoricPrismaRepository implements HistoricRepository {
     description,
     year,
   }: IListHistoric): Promise<HistoricPrisma[]> {
+    const filters = {
+      userId,
+      categoryId,
+      description,
+    };
+
+    const constructedWhere = Object.keys(filters).reduce(
+      (aggregate, property) => {
+        aggregate[property] = filters[property];
+        return aggregate;
+      },
+      {},
+    );
+
     const historicList = await this.prismaService.historic.findMany({
-      where: { userId },
+      where: constructedWhere,
     });
 
     return historicList;

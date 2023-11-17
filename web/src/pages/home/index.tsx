@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-
 import { toast } from "react-toastify";
 
 import { CardHistory } from "@/components/CardHistory";
@@ -33,6 +32,13 @@ export interface ICategoriesUser {
   updateAt: Date;
 }
 
+export interface IParamsHistoricList {
+  description?: string;
+  categoryId?: string;
+  year?: string;
+  mouth?: string;
+}
+
 export default function Home() {
   const user = useSelector(selectUser);
 
@@ -55,17 +61,26 @@ export default function Home() {
     }
   }
 
-  async function getHistories() {
+  async function getHistories(params: IParamsHistoricList = {}) {
     const { data: histories } = await api.get("/historic", {
       headers,
+      params,
     });
 
     setHistories(histories);
   }
 
+  async function getInfosUser() {
+    const requests = [
+      api.get("/categories/user", { headers }),
+      api.get("/historic", { headers }),
+    ];
+
+    await Promise.all(requests);
+  }
+
   useEffect(() => {
-    getCategoriesUser();
-    getHistories();
+    getInfosUser();
   }, []);
 
   return (
