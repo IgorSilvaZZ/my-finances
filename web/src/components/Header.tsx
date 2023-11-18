@@ -1,35 +1,73 @@
 import { useRef } from "react";
-
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import numeral from "numeral";
+
 import dayjs from "dayjs";
+import { MagnifyingGlass } from "@phosphor-icons/react";
 
 import { selectUser } from "@/store/users/user.slice";
-import { MagnifyingGlass } from "@phosphor-icons/react";
+import { filtersAction } from "@/store/filters/filters.slice";
+
+import { ICategoriesUser } from "@/pages/home";
 import { months, getYears } from "@/utils/headerHome";
 
-export const Header = () => {
+type TypeFiltersSearch = {
+  filters: {
+    description?: string;
+    categoryId?: string;
+    mouth?: string;
+    year?: string;
+  };
+};
+
+interface IHeaderProps {
+  categoriesUser: ICategoriesUser[];
+}
+
+export const Header = ({ categoriesUser }: IHeaderProps) => {
+  const dispatch = useDispatch();
   const user = useSelector(selectUser);
 
   const years = getYears();
 
-  const nameTransaction = useRef(null);
-  const nameCategory = useRef(null);
-  const year = useRef(null);
-  const month = useRef(null);
+  const nameTransaction = useRef<HTMLInputElement>(null);
+  const nameCategory = useRef<HTMLSelectElement>(null);
+  const year = useRef<HTMLSelectElement>(null);
+  const mouth = useRef<HTMLSelectElement>(null);
+
+  const listCategoriesUser = [
+    { id: "all", description: "Selecione" },
+    ...categoriesUser,
+  ];
 
   async function getSearch(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const dataSearch = {
-      nameTransaction,
-      nameCategory,
-      year,
-      month,
+    const params = {
+      description: nameTransaction.current?.value,
+      categoryId: nameCategory.current?.value,
+      year: year.current?.value,
+      mouth: mouth.current?.value,
     };
 
-    // Colocar os valores no redux
+    const dataSearch = {
+      filters: {
+        ...params,
+      },
+    };
+
+    Object.keys(dataSearch.filters).forEach((key) => {
+      const filterKey = key as keyof TypeFiltersSearch["filters"];
+      const value = dataSearch.filters[filterKey];
+
+      if (!value || value === "all") {
+        delete dataSearch.filters[filterKey];
+      }
+    });
+
     console.log(dataSearch);
+
+    // dispatch(filtersAction.searchFilter(dataSearch));
   }
 
   return (
@@ -46,7 +84,10 @@ export const Header = () => {
         </div>
       </div>
 
-      <div className='flex flex-col gap-3 w-1/2 px-5 justify-center items-center rounded-lg'>
+      <form
+        onSubmit={getSearch}
+        className='flex flex-col gap-3 w-1/2 px-5 justify-center items-center rounded-lg'
+      >
         <div className='flex items-center gap-3 h-12 w-full'>
           <input
             type='text'
@@ -55,7 +96,10 @@ export const Header = () => {
             ref={nameTransaction}
           />
 
-          <button className='w-12 p-3 h-11 flex items-center justify-center rounded-xl bg-violet-600'>
+          <button
+            type='submit'
+            className='w-12 p-3 h-11 flex items-center justify-center rounded-xl bg-violet-600'
+          >
             <MagnifyingGlass size={30} className='text-white font-bold' />
           </button>
         </div>
@@ -73,9 +117,11 @@ export const Header = () => {
               className='p-2 rounded-lg bg-zinc-700 text-white outline-none border-2 border-zinc-800'
               ref={nameCategory}
             >
-              <option value=''>Viagem</option>
-              <option value=''>Lazer</option>
-              <option value=''>Domestico</option>
+              {listCategoriesUser.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.description}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -107,7 +153,7 @@ export const Header = () => {
             <select
               id='categoryId-search'
               className='p-2 rounded-lg bg-zinc-700 text-white outline-none border-2 border-zinc-800'
-              ref={month}
+              ref={mouth}
             >
               {months.map(({ title, value }) => (
                 <>
@@ -117,7 +163,7 @@ export const Header = () => {
             </select>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
