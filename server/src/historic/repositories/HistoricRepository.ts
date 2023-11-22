@@ -1,7 +1,7 @@
 import { Historic as HistoricPrisma } from '@prisma/client';
 
 import { CreateHistoricDTO } from '../dtos/CreateHistoricDTO';
-import { IListHistoric } from '../interfaces/IListHistoric';
+import { IListHistoricDTO } from '../dtos/ListHistoricDTO';
 
 export abstract class HistoricRepository {
   abstract create(data: CreateHistoricDTO): Promise<HistoricPrisma>;
@@ -11,6 +11,6 @@ export abstract class HistoricRepository {
     categoryId,
     mouth,
     year,
-  }: IListHistoric): Promise<HistoricPrisma[]>;
+  }: IListHistoricDTO): Promise<HistoricPrisma[]>;
   abstract findById(id: string): Promise<HistoricPrisma>;
 }

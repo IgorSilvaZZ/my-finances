@@ -15,6 +15,7 @@ import { ListHistoricUseCase } from './useCases/ListHistoricUseCase';
 import { FindByIdHistoricUseCase } from './useCases/FindByIdHistoricUseCase';
 
 import { CreateHistoricDTO } from './dtos/CreateHistoricDTO';
+import { IListHistoricDTO } from './dtos/ListHistoricDTO';
 
 import { AuthGuard } from '../guards/auth.guard';
 
@@ -48,7 +49,10 @@ export class HistoricController {
 
   @UseGuards(AuthGuard)
   @Get('/')
-  async listHistoricUser(@Request() request, @Query() queryParams: any) {
+  async listHistoricUser(
+    @Request() request,
+    @Query() queryParams: IListHistoricDTO,
+  ) {
     const userId = request.userId;
 
     const params = {

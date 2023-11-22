@@ -11,6 +11,8 @@ import { filtersAction } from "@/store/filters/filters.slice";
 import { ICategoriesUser } from "@/pages/home";
 import { months, getYears } from "@/utils/headerHome";
 
+import { api } from "@/lib/axios";
+
 type TypeFiltersSearch = {
   filters: {
     description?: string;
@@ -68,6 +70,8 @@ export const Header = ({ categoriesUser }: IHeaderProps) => {
     console.log(dataSearch);
 
     // dispatch(filtersAction.searchFilter(dataSearch));
+
+    // Aqui enviar a requisição aqui dos filtros para a api
   }
 
   return (

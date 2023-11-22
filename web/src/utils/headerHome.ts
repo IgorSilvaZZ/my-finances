@@ -1,19 +1,20 @@
 import dayjs from "dayjs";
 
+// Valores padrão de meses do Javascript (Date)
 export const months = [
   { title: "Selecione", value: "all" },
-  { title: "Janeiro", value: 1 },
-  { title: "Fevereiro", value: 2 },
-  { title: "Março", value: 3 },
-  { title: "Abril", value: 4 },
-  { title: "Maio", value: 5 },
-  { title: "Junho", value: 6 },
-  { title: "Julho", value: 7 },
-  { title: "Agosto", value: 8 },
-  { title: "Setembro", value: 9 },
-  { title: "Outubro", value: 10 },
-  { title: "Novembro", value: 11 },
-  { title: "Dezembro", value: 12 },
+  { title: "Janeiro", value: 0 },
+  { title: "Fevereiro", value: 1 },
+  { title: "Março", value: 2 },
+  { title: "Abril", value: 3 },
+  { title: "Maio", value: 4 },
+  { title: "Junho", value: 5 },
+  { title: "Julho", value: 6 },
+  { title: "Agosto", value: 7 },
+  { title: "Setembro", value: 8 },
+  { title: "Outubro", value: 9 },
+  { title: "Novembro", value: 10 },
+  { title: "Dezembro", value: 11 },
 ];
 
 export const getYears = () => {

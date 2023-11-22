@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
 import { HistoricRepository } from '../repositories/HistoricRepository';
-import { IListHistoric } from '../interfaces/IListHistoric';
+import { IListHistoricDTO } from '../dtos/ListHistoricDTO';
 
 @Injectable()
 export class ListHistoricUseCase {
   constructor(private historicRepository: HistoricRepository) {}
 
-  async execute(params: IListHistoric) {
+  async execute(params: IListHistoricDTO) {
     const paramsForListHistoric = {
       userId: params.userId,
       ...params,

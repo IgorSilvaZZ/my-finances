@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Historic as HistoricPrisma } from '@prisma/client';
+import dayjs from 'dayjs';
 
 import { CreateHistoricDTO } from '../../historic/dtos/CreateHistoricDTO';
 import { HistoricRepository } from '../../historic/repositories/HistoricRepository';
 import { PrismaService } from '../database.service';
 import { Replace } from '../../helpers/Replace';
-import { IListHistoric } from 'src/historic/interfaces/IListHistoric';
+import { IListHistoricDTO } from 'src/historic/dtos/ListHistoricDTO';
 
 @Injectable()
 export class HistoricPrismaRepository implements HistoricRepository {
@@ -17,23 +18,37 @@ export class HistoricPrismaRepository implements HistoricRepository {
     mouth,
     description,
     year,
-  }: IListHistoric): Promise<HistoricPrisma[]> {
-    const filters = {
-      userId,
-      categoryId,
-      description,
-    };
+  }: IListHistoricDTO): Promise<HistoricPrisma[]> {
+    const where: Record<string, any> = {};
 
-    const constructedWhere = Object.keys(filters).reduce(
-      (aggregate, property) => {
-        aggregate[property] = filters[property];
-        return aggregate;
-      },
-      {},
-    );
+    if (userId) {
+      where.userId = userId;
+    }
+
+    if (categoryId) {
+      where.categoryId = categoryId;
+    }
+
+    if (description) {
+      where.description = {
+        contains: description,
+      };
+    }
+
+    if (year) {
+      where.createdAt = {
+        gte: new Date(`${year}-01-02T00:00:00Z`),
+        lt: new Date(`${Number(year) + 1}-01-02T00:00:00Z`),
+      };
+    }
+
+    if (mouth) {
+      where.createdAt.gte.setMonth(Number(mouth) - 1);
+      where.createdAt.lt.setMonth(Number(mouth));
+    }
 
     const historicList = await this.prismaService.historic.findMany({
-      where: constructedWhere,
+      where,
     });
 
     return historicList;

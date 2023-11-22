@@ -1,4 +1,4 @@
-export interface IListHistoric {
+export interface IListHistoricDTO {
   userId: string;
   description?: string;
   categoryId?: string;
