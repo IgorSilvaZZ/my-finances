@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
 
+export const currentYear = String(dayjs().year());
+
 // Valores padrão de meses do Javascript (Date)
 export const months = [
   { title: "Selecione", value: "all" },
@@ -21,7 +23,6 @@ export const getYears = () => {
   const yearCreated = "2023";
   const numberYearCreated = Number(yearCreated.substring(2));
 
-  const currentYear = String(dayjs().year());
   const numberCurrentYear = Number(currentYear.substring(2));
 
   const years = [];

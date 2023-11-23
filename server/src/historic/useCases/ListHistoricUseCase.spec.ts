@@ -67,7 +67,10 @@ describe('List Historic a user', () => {
       historicRepositoryInMemory,
     );
 
-    const historicList = await listHistoricUseCase.execute({ userId: user.id });
+    const historicList = await listHistoricUseCase.execute({
+      userId: user.id,
+      year: '2023',
+    });
 
     expect(historicList).toHaveLength(2);
   });
@@ -136,6 +139,7 @@ describe('List Historic a user', () => {
     const historicList = await listHistoricUseCase.execute({
       userId: user.id,
       description: 'mercadinho',
+      year: '2023',
     });
 
     expect(historicList).toHaveLength(3);
@@ -268,6 +272,7 @@ describe('List Historic a user', () => {
 
     const historicListMonthJanuary = await listHistoricUseCase.execute({
       userId: user.id,
+      year: '2023',
       mouth: '1',
     });
 

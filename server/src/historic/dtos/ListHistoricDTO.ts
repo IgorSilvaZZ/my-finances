@@ -2,6 +2,6 @@ export interface IListHistoricDTO {
   userId: string;
   description?: string;
   categoryId?: string;
-  year?: string;
+  year: string;
   mouth?: string;
 }

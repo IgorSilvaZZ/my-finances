@@ -21,9 +21,12 @@ export class HistoricPrismaRepository implements HistoricRepository {
   }: IListHistoricDTO): Promise<HistoricPrisma[]> {
     const where: Record<string, any> = {};
 
-    if (userId) {
-      where.userId = userId;
-    }
+    where.userId = userId;
+
+    where.createdAt = {
+      gte: new Date(`${year}-01-02T00:00:00Z`),
+      lt: new Date(`${Number(year) + 1}-01-02T00:00:00Z`),
+    };
 
     if (categoryId) {
       where.categoryId = categoryId;
@@ -35,16 +38,19 @@ export class HistoricPrismaRepository implements HistoricRepository {
       };
     }
 
-    if (year) {
-      where.createdAt = {
-        gte: new Date(`${year}-01-02T00:00:00Z`),
-        lt: new Date(`${Number(year) + 1}-01-02T00:00:00Z`),
-      };
-    }
-
+    // Sempre vai ser enviado o ano porem o mes é opcional
     if (mouth) {
-      where.createdAt.gte.setMonth(Number(mouth) - 1);
-      where.createdAt.lt.setMonth(Number(mouth));
+      const startDate = new Date(`${year}-${mouth}-01T00:00:00Z`);
+      const endYear = Number(mouth) === 12 ? Number(year) + 1 : year;
+
+      const monthFormatter = String((Number(mouth) % 12) + 1).padStart(2, '0');
+
+      const endDate = new Date(`${endYear}-${monthFormatter}-01T00:00:00Z`);
+
+      where.createdAt = {
+        gte: startDate,
+        lt: endDate,
+      };
     }
 
     const historicList = await this.prismaService.historic.findMany({

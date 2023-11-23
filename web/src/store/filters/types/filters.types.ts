@@ -10,6 +10,6 @@ export interface IFilterPayload {
     description?: string;
     categoryId?: string;
     mouth?: string;
-    year?: string;
+    year: string;
   };
 }

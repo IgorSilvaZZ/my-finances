@@ -8,9 +8,11 @@ import { NavBar } from "@/components/NavBar";
 import { Header } from "@/components/Header";
 
 import { selectUser } from "../../store/users/user.slice";
+import { selectFilters } from "../../store/filters/filters.slice";
 
 import { api } from "../../lib/axios";
 import { ModalCreateHistory } from "@/components/ModalCreateHistory";
+import { currentYear } from "@/utils/headerHome";
 
 export interface IHistories {
   id: string;
@@ -35,12 +37,20 @@ export interface ICategoriesUser {
 export interface IParamsHistoricList {
   description?: string;
   categoryId?: string;
-  year?: string;
+  year: string;
   mouth?: string;
 }
 
+type TypeFiltersSearch = {
+  description?: string;
+  categoryId?: string;
+  mouth?: string;
+  year: string;
+};
+
 export default function Home() {
   const user = useSelector(selectUser);
+  const filters = useSelector(selectFilters);
 
   const [histories, setHistories] = useState<IHistories[]>([]);
   const [categoriesUser, setCategoriesUser] = useState<ICategoriesUser[]>([]);
@@ -62,9 +72,24 @@ export default function Home() {
     }
   }
 
-  async function getHistories(params: IParamsHistoricList = {}) {
+  async function getHistories(
+    params: IParamsHistoricList = { year: currentYear }
+  ) {
     try {
       setLoading(true);
+
+      const validParams = { ...params };
+
+      Object.keys(validParams).forEach((key) => {
+        const filterKey = key as keyof TypeFiltersSearch;
+        const value = validParams[filterKey];
+
+        if (filterKey !== "year") {
+          if (!value || value === "all") {
+            delete validParams[filterKey];
+          }
+        }
+      });
 
       const { data: histories } = await api.get("/historic", {
         headers,
@@ -73,6 +98,8 @@ export default function Home() {
 
       setHistories(histories);
     } catch (error) {
+      console.log(error);
+
       toast.error("Erro ao listar historico de transações! Tente novamente!");
     } finally {
       setLoading(false);
@@ -80,7 +107,7 @@ export default function Home() {
   }
 
   async function getInfosUser() {
-    const requests = [getCategoriesUser(), getHistories()];
+    const requests = [getCategoriesUser(), getHistories(filters)];
 
     await Promise.all(requests);
   }
@@ -94,7 +121,7 @@ export default function Home() {
       <NavBar />
 
       <main className='flex flex-col items-center gap-4 mx-auto max-w-[1100px] mt-5'>
-        <Header categoriesUser={categoriesUser} />
+        <Header categoriesUser={categoriesUser} getHistories={getHistories} />
 
         <div className='flex flex-col items-center gap-2 w-full h-80 overflow-x-hidden bg-zinc-800 rounded-lg'>
           <div className='flex w-full h-5 items-center justify-between text-sm font-semibold px-4 mt-2'>

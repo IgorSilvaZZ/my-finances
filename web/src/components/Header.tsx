@@ -6,29 +6,22 @@ import dayjs from "dayjs";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 
 import { selectUser } from "@/store/users/user.slice";
-import { filtersAction } from "@/store/filters/filters.slice";
+import { filtersAction, selectFilters } from "@/store/filters/filters.slice";
 
-import { ICategoriesUser } from "@/pages/home";
-import { months, getYears } from "@/utils/headerHome";
+import { ICategoriesUser, IParamsHistoricList } from "@/pages/home";
+import { months, getYears, currentYear } from "@/utils/headerHome";
 
 import { api } from "@/lib/axios";
-
-type TypeFiltersSearch = {
-  filters: {
-    description?: string;
-    categoryId?: string;
-    mouth?: string;
-    year?: string;
-  };
-};
-
 interface IHeaderProps {
   categoriesUser: ICategoriesUser[];
+  getHistories(params: IParamsHistoricList): Promise<void>;
 }
 
-export const Header = ({ categoriesUser }: IHeaderProps) => {
+export const Header = ({ categoriesUser, getHistories }: IHeaderProps) => {
   const dispatch = useDispatch();
+
   const user = useSelector(selectUser);
+  const filters = useSelector(selectFilters);
 
   const years = getYears();
 
@@ -48,7 +41,7 @@ export const Header = ({ categoriesUser }: IHeaderProps) => {
     const params = {
       description: nameTransaction.current?.value,
       categoryId: nameCategory.current?.value,
-      year: year.current?.value,
+      year: year.current?.value ?? currentYear,
       mouth: mouth.current?.value,
     };
 
@@ -58,20 +51,10 @@ export const Header = ({ categoriesUser }: IHeaderProps) => {
       },
     };
 
-    Object.keys(dataSearch.filters).forEach((key) => {
-      const filterKey = key as keyof TypeFiltersSearch["filters"];
-      const value = dataSearch.filters[filterKey];
-
-      if (!value || value === "all") {
-        delete dataSearch.filters[filterKey];
-      }
-    });
-
-    console.log(dataSearch);
-
-    // dispatch(filtersAction.searchFilter(dataSearch));
+    dispatch(filtersAction.searchFilter(dataSearch));
 
     // Aqui enviar a requisição aqui dos filtros para a api
+    await getHistories(params);
   }
 
   return (

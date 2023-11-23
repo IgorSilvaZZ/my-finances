@@ -2,12 +2,12 @@ import { Historic as HistoricPrisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 
 import { CreateHistoricDTO } from '../../src/historic/dtos/CreateHistoricDTO';
+import { IListHistoricDTO } from 'src/historic/dtos/ListHistoricDTO';
 import { IHistoric } from '../../src/historic/interfaces/Historic';
 import { HistoricRepository } from '../../src/historic/repositories/HistoricRepository';
 import { PrismaHistoricMapper } from '../../src/database/mappers/PrismaHistoricMapper';
 
 import { Replace } from '../../src/helpers/Replace';
-import { IListHistoric } from 'src/historic/interfaces/IListHistoric';
 
 export class HistoricRepositoryInMemory implements HistoricRepository {
   public historic: IHistoric[] = [];
@@ -18,7 +18,7 @@ export class HistoricRepositoryInMemory implements HistoricRepository {
     mouth,
     description,
     year,
-  }: IListHistoric): Promise<HistoricPrisma[]> {
+  }: IListHistoricDTO): Promise<HistoricPrisma[]> {
     const filters = [];
 
     filters.push((item: IHistoric) => {
