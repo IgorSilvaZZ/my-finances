@@ -4,7 +4,7 @@ export const currentYear = String(dayjs().year());
 
 // Valores padrão de meses do Javascript (Date)
 export const months = [
-  { title: "Selecione", value: "all" },
+  { title: "Todos", value: "all" },
   { title: "Janeiro", value: 0 },
   { title: "Fevereiro", value: 1 },
   { title: "Março", value: 2 },

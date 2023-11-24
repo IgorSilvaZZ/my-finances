@@ -93,7 +93,7 @@ export default function Home() {
 
       const { data: histories } = await api.get("/historic", {
         headers,
-        params,
+        params: validParams,
       });
 
       setHistories(histories);

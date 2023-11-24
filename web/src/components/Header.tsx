@@ -10,8 +10,6 @@ import { filtersAction, selectFilters } from "@/store/filters/filters.slice";
 
 import { ICategoriesUser, IParamsHistoricList } from "@/pages/home";
 import { months, getYears, currentYear } from "@/utils/headerHome";
-
-import { api } from "@/lib/axios";
 interface IHeaderProps {
   categoriesUser: ICategoriesUser[];
   getHistories(params: IParamsHistoricList): Promise<void>;
@@ -31,7 +29,7 @@ export const Header = ({ categoriesUser, getHistories }: IHeaderProps) => {
   const mouth = useRef<HTMLSelectElement>(null);
 
   const listCategoriesUser = [
-    { id: "all", description: "Selecione" },
+    { id: "all", description: "Todos" },
     ...categoriesUser,
   ];
 
