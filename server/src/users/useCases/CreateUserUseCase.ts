@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { Injectable } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common/exceptions';
 import { hash } from 'bcrypt';
@@ -11,8 +9,8 @@ import { CategoryRepository } from '../../categories/repositories/CategoryReposi
 @Injectable()
 export class CreateUserUseCase {
   constructor(
-    private usersRepository: UsersRepository, 
-    private categoryRepository: CategoryRepository
+    private usersRepository: UsersRepository,
+    private categoryRepository: CategoryRepository,
   ) {}
 
   async execute({ name, email, password, avatarUrl }: CreateUserDTO) {
@@ -33,14 +31,14 @@ export class CreateUserUseCase {
     });
 
     const category = await this.categoryRepository.create({
-      description: "Outros",
-      icon: "Other",
-      userId: user.id
+      description: 'Outros',
+      icon: 'Other',
+      userId: user.id,
     });
 
     return {
       user,
-      category
+      category,
     };
   }
 }

@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-
-import numeral from "numeral";
-import dayjs from "dayjs";
 import { toast } from "react-toastify";
+import ReactLoading from "react-loading";
 
 import { CardHistory } from "@/components/CardHistory";
 import { NavBar } from "@/components/NavBar";
+import { Header } from "@/components/Header";
 
 import { selectUser } from "../../store/users/user.slice";
+import { selectFilters } from "../../store/filters/filters.slice";
 
 import { api } from "../../lib/axios";
 import { ModalCreateHistory } from "@/components/ModalCreateHistory";
+import { currentYear } from "@/utils/headerHome";
 
 export interface IHistories {
   id: string;
@@ -33,11 +34,27 @@ export interface ICategoriesUser {
   updateAt: Date;
 }
 
+export interface IParamsHistoricList {
+  description?: string;
+  categoryId?: string;
+  year: string;
+  mouth?: string;
+}
+
+type TypeFiltersSearch = {
+  description?: string;
+  categoryId?: string;
+  mouth?: string;
+  year: string;
+};
+
 export default function Home() {
   const user = useSelector(selectUser);
+  const filters = useSelector(selectFilters);
 
   const [histories, setHistories] = useState<IHistories[]>([]);
   const [categoriesUser, setCategoriesUser] = useState<ICategoriesUser[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const headers = {
     Authorization: `Bearer ${user.token}`,
@@ -55,17 +72,48 @@ export default function Home() {
     }
   }
 
-  async function getHistories() {
-    const { data: histories } = await api.get("/historic", {
-      headers,
-    });
+  async function getHistories(
+    params: IParamsHistoricList = { year: currentYear }
+  ) {
+    try {
+      setLoading(true);
 
-    setHistories(histories);
+      const validParams = { ...params };
+
+      Object.keys(validParams).forEach((key) => {
+        const filterKey = key as keyof TypeFiltersSearch;
+        const value = validParams[filterKey];
+
+        if (filterKey !== "year") {
+          if (!value || value === "all") {
+            delete validParams[filterKey];
+          }
+        }
+      });
+
+      const { data: histories } = await api.get("/historic", {
+        headers,
+        params: validParams,
+      });
+
+      setHistories(histories);
+    } catch (error) {
+      console.log(error);
+
+      toast.error("Erro ao listar historico de transações! Tente novamente!");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function getInfosUser() {
+    const requests = [getCategoriesUser(), getHistories(filters)];
+
+    await Promise.all(requests);
   }
 
   useEffect(() => {
-    getCategoriesUser();
-    getHistories();
+    getInfosUser();
   }, []);
 
   return (
@@ -73,19 +121,7 @@ export default function Home() {
       <NavBar />
 
       <main className='flex flex-col items-center gap-4 mx-auto max-w-[1100px] mt-5'>
-        <div className='flex items-center justify-center flex-col gap-3 w-full h-52 bg-zinc-800 rounded-lg'>
-          <p className='text-base text-zinc-500 font-semibold'>
-            {dayjs().format("dddd, DD [de] MMMM [de] YYYY")}
-          </p>
-          <p className='text-2xl text-white font-bold'>
-            Bem vindo, {user.name}
-          </p>
-          <div className='h-12 w-[450px] bg-violet-600 flex items-center justify-center gap-3 rounded-lg mt-4'>
-            <span className='text-white text-lg font-semibold'>
-              Saldo Atual: R$ {numeral(user.balance).format("0,0")}
-            </span>
-          </div>
-        </div>
+        <Header categoriesUser={categoriesUser} getHistories={getHistories} />
 
         <div className='flex flex-col items-center gap-2 w-full h-80 overflow-x-hidden bg-zinc-800 rounded-lg'>
           <div className='flex w-full h-5 items-center justify-between text-sm font-semibold px-4 mt-2'>
@@ -98,16 +134,40 @@ export default function Home() {
           </div>
 
           <div className='flex flex-col items-center px-2 py-4 gap-2 overflow-y-auto'>
-            {histories?.map(({ id, description, isExit, value, createdAt }) => (
-              <CardHistory
-                id={id}
-                key={id}
-                description={description}
-                createdAt={createdAt.toString()}
-                value={value}
-                isExit={isExit}
-              />
-            ))}
+            {!loading ? (
+              <>
+                {histories.length > 0 ? (
+                  <>
+                    {histories?.map(
+                      ({ id, description, isExit, value, createdAt }) => (
+                        <CardHistory
+                          id={id}
+                          key={id}
+                          description={description}
+                          createdAt={createdAt.toString()}
+                          value={value}
+                          isExit={isExit}
+                        />
+                      )
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className='flex items-center justify-center w-[1000px] h-[1000px]'>
+                      <span className='text-violet-500 font-semibold text-base'>
+                        Nenhuma Transação encontrada
+                      </span>
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              <>
+                <div className='flex items-center justify-center w-[1000px] h-[1000px]'>
+                  <ReactLoading type='spin' color='#8b5cf6' />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </main>

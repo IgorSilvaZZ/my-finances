@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 export interface CreateCategoryDTO {
   description: string;
   userId: string;

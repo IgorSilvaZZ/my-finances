@@ -8,6 +8,7 @@ import Image from "next/image";
 import * as yup from "yup";
 
 import { usersActions } from "../store/users/user.slice";
+import { filtersAction } from "@/store/filters/filters.slice";
 
 import { api } from "../lib/axios";
 
@@ -45,6 +46,7 @@ export default function Home() {
         const { data } = await api.post("/users/login", formData);
 
         dispatch(usersActions.authenticate(data));
+        dispatch(filtersAction.clearStateFilters());
 
         toast.success("Logado com sucesso!");
 

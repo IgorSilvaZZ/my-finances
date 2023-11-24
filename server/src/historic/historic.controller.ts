@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import {
   Controller,
   Get,
@@ -9,6 +7,7 @@ import {
   UseGuards,
   Param,
   Logger,
+  Query,
 } from '@nestjs/common';
 
 import { CreateHistoricUseCase } from './useCases/CreateHistoricUseCase';
@@ -16,6 +15,7 @@ import { ListHistoricUseCase } from './useCases/ListHistoricUseCase';
 import { FindByIdHistoricUseCase } from './useCases/FindByIdHistoricUseCase';
 
 import { CreateHistoricDTO } from './dtos/CreateHistoricDTO';
+import { IListHistoricDTO } from './dtos/ListHistoricDTO';
 
 import { AuthGuard } from '../guards/auth.guard';
 
@@ -49,10 +49,18 @@ export class HistoricController {
 
   @UseGuards(AuthGuard)
   @Get('/')
-  async listHistoricUser(@Request() request) {
+  async listHistoricUser(
+    @Request() request,
+    @Query() queryParams: IListHistoricDTO,
+  ) {
     const userId = request.userId;
 
-    const listHistoric = await this.listHistoricUseCase.execute(userId);
+    const params = {
+      userId,
+      ...queryParams,
+    };
+
+    const listHistoric = await this.listHistoricUseCase.execute(params);
 
     return listHistoric;
   }

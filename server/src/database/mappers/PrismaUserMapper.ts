@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { IUser } from '../../users/interfaces/User';
 
 export class PrismaUserMapper {

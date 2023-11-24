@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 import { UsersInMemoryRepository } from '../../../test/repositories/UsersInMemoryRepository';

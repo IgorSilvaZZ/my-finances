@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 export interface CreateHistoricDTO {
   description: string;
   value: number;

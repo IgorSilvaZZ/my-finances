@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { User as UserPrisma } from '@prisma/client';
 
 import { CreateUserDTO } from '../dtos/CreateUserDTO';

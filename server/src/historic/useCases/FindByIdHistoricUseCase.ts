@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { IHistoric } from '../interfaces/Historic';

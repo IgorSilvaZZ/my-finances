@@ -5,9 +5,11 @@ import storage from "redux-persist/lib/storage";
 import thunk from "redux-thunk";
 
 import userReducer from "./users/user.slice";
+import filtersReducer from "./filters/filters.slice";
 
 const rootReducer = combineReducers({
   user: userReducer,
+  filters: filtersReducer,
 });
 
 const persistConfig = {

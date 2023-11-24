@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import {
   Body,
   Get,
@@ -41,6 +39,7 @@ export class CategoriesController {
     return category;
   }
 
+  @UseGuards(AuthGuard)
   @Get('/user')
   async listCategoriesUser(@Request() request) {
     const userId = request.userId;

@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { CreateUserDTO } from 'src/users/dtos/CreateUserDTO';
 
 type Override = Partial<CreateUserDTO>;

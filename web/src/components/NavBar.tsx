@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { SignOut } from "@phosphor-icons/react";
 
 import { usersActions, selectUser } from "../store/users/user.slice";
+import { filtersAction } from "@/store/filters/filters.slice";
 
 export const NavBar = () => {
   const router = useRouter();
@@ -13,6 +14,7 @@ export const NavBar = () => {
   function logout() {
     router.push("/");
     dispatch(usersActions.clearStateUser());
+    dispatch(filtersAction.clearStateFilters());
   }
 
   return (

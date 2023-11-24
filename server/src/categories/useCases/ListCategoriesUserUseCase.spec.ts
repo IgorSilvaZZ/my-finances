@@ -1,6 +1,5 @@
-/* eslint-disable prettier/prettier */
-
 import { NotFoundException } from '@nestjs/common';
+import { faker } from '@faker-js/faker';
 
 import { CategoryRepositoryInMemory } from '../../../test/repositories/CategoryRepositoryInMemory';
 import { UsersInMemoryRepository } from '../../../test/repositories/UsersInMemoryRepository';
@@ -30,11 +29,26 @@ describe('List Categories a user', () => {
       }),
     );
 
+    const userTwo = await usersRepositoryInMemory.create(
+      makeUser({
+        balance: 10000.0,
+      }),
+    );
+
     await categoryRepositoryInMemory.create(makeCategory({ userId: user.id }));
+    await categoryRepositoryInMemory.create(
+      makeCategory({
+        description: faker.commerce.department.toString(),
+        userId: user.id,
+      }),
+    );
+    await categoryRepositoryInMemory.create(
+      makeCategory({ userId: userTwo.id }),
+    );
 
     const categoriesUser = await listCategoriesUserUseCase.execute(user.id);
 
-    expect(categoriesUser).toHaveLength(1);
+    expect(categoriesUser).toHaveLength(2);
     expect(categoriesUser[0].userId).toEqual(user.id);
   });
 

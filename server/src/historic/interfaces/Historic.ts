@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 export interface IHistoric {
   id: string;
   description: string;

@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { User as UserPrisma } from '@prisma/client';
 import { v4 as uuid } from 'uuid';
 
@@ -31,7 +29,7 @@ export class UsersInMemoryRepository implements UsersRepository {
   }
 
   async findByEmail(email: string): Promise<UserPrisma | null> {
-    const user = this.users.find((user) => user.email === email);
+    const user = this.users.find(user => user.email === email);
 
     if (!user) {
       return null;
@@ -41,7 +39,7 @@ export class UsersInMemoryRepository implements UsersRepository {
   }
 
   async findById(id: string): Promise<UserPrisma | null> {
-    const user = this.users.find((user) => user.id === id);
+    const user = this.users.find(user => user.id === id);
 
     if (!user) {
       return null;
@@ -51,7 +49,7 @@ export class UsersInMemoryRepository implements UsersRepository {
   }
 
   async updateBalance(id: string, balance: number): Promise<number> {
-    const user = this.users.find((user) => user.id === id);
+    const user = this.users.find(user => user.id === id);
 
     user.balance = balance;
 
