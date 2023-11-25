@@ -12,6 +12,8 @@ const initialState: IUserState = {
   balance: 0,
   avatarUrl: "",
   token: "",
+  histories: [],
+  categories: []
 };
 
 const slice = createSlice({
@@ -26,6 +28,8 @@ const slice = createSlice({
       state.avatarUrl = payload.user.avatarUrl;
       state.balance = payload.user.balance;
       state.token = payload.token;
+      state.histories = payload.user.histories;
+      state.categories = payload.user.categories
     },
     updateBalance(state, { payload }): void {
       state.balance = payload.balance;

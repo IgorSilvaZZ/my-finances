@@ -4,11 +4,15 @@ import { JwtService } from '@nestjs/jwt';
 
 import { AuthenticateUserDTO } from '../dtos/AuthenticateUserDTO';
 import { UsersRepository } from '../repositories/UsersRepository';
+import { HistoricRepository } from '../../historic/repositories/HistoricRepository';
+import { CategoryRepository } from '../../categories/repositories/CategoryRepository';
 
 @Injectable()
 export class AuthenticateUserUseCase {
   constructor(
     private usersRepository: UsersRepository,
+    private historiesRepository: HistoricRepository,
+    private categoriesRepository: CategoryRepository,
     private jwtService: JwtService,
   ) {}
 
@@ -25,6 +29,21 @@ export class AuthenticateUserUseCase {
 
     const token = await this.jwtService.signAsync({ sub: userExists.id });
 
-    return { user: userExists, token };
+    const histories = await this.historiesRepository.list({
+      userId: userExists.id,
+      year: '2023',
+    });
+
+    const categories = await this.categoriesRepository.listByUser(
+      userExists.id,
+    );
+
+    const user = {
+      ...userExists,
+      histories,
+      categories,
+    };
+
+    return { user, token };
   }
 }

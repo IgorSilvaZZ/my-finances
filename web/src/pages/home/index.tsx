@@ -3,6 +3,10 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import ReactLoading from "react-loading";
 
+import { IHistories } from "@/interfaces/IHistories.interface";
+import { ICategoriesUser } from "@/interfaces/ICategoriesUser.interface";
+import { IParamsHistoricList } from "@/interfaces/IParamsHistoricList.interface";
+
 import { CardHistory } from "@/components/CardHistory";
 import { NavBar } from "@/components/NavBar";
 import { Header } from "@/components/Header";
@@ -13,33 +17,6 @@ import { selectFilters } from "../../store/filters/filters.slice";
 import { api } from "../../lib/axios";
 import { ModalCreateHistory } from "@/components/ModalCreateHistory";
 import { currentYear } from "@/utils/headerHome";
-
-export interface IHistories {
-  id: string;
-  description: string;
-  value: number;
-  type: string;
-  isExit: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: string;
-}
-
-export interface ICategoriesUser {
-  id: string;
-  description: string;
-  icon: string;
-  userId: string;
-  createdAt: Date;
-  updateAt: Date;
-}
-
-export interface IParamsHistoricList {
-  description?: string;
-  categoryId?: string;
-  year: string;
-  mouth?: string;
-}
 
 type TypeFiltersSearch = {
   description?: string;
