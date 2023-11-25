@@ -9,8 +9,8 @@ export interface IUserState {
   balance: number;
   avatarUrl: string;
   token: string | null;
-  histories: IHistories | [] 
-  categories: ICategoriesUser | []
+  histories: IHistories | [];
+  categories: ICategoriesUser | [];
 }
 
 export interface IUserPayload {
@@ -25,4 +25,9 @@ export interface IUserPayload {
     categories: ICategoriesUser;
   };
   token: string;
+}
+
+export interface IChangeUserInfosPayload {
+  field: string;
+  value: string | number | IHistories | ICategoriesUser;
 }

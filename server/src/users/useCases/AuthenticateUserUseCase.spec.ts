@@ -41,12 +41,15 @@ describe('Authentication User', () => {
 
     await createUserUseCase.execute(user);
 
-    const token = await authenticateUserUseCase.execute({
+    const authenticate = await authenticateUserUseCase.execute({
       email: user.email,
       password: user.password,
     });
 
-    expect(token).toBeTruthy();
+    expect(authenticate).toBeTruthy();
+    expect(authenticate).toHaveProperty('user');
+    expect(authenticate.user).toHaveProperty('categories');
+    expect(authenticate.user).toHaveProperty('histories');
   });
 
   it('should not be able authenticate a user incorrect email', async () => {
