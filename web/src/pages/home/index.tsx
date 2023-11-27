@@ -31,6 +31,7 @@ export default function Home() {
   const filters = useSelector(selectFilters);
 
   const histories = user.histories as IHistories[] | [];
+
   const [loading, setLoading] = useState<boolean>(false);
 
   const headers = {
@@ -43,9 +44,7 @@ export default function Home() {
         headers,
       });
 
-      dispatch(
-        usersActions.changeUserInfos({ field: "categories", value: data })
-      );
+      dispatch(usersActions.updateCategories(data));
     } catch (error) {
       toast.error("Erro ao listar suas categorias! Tente novamente!");
     }
@@ -75,14 +74,7 @@ export default function Home() {
         params: validParams,
       });
 
-      console.log(historiesData);
-
-      dispatch(
-        usersActions.changeUserInfos({
-          field: "histories",
-          value: historiesData,
-        })
-      );
+      dispatch(usersActions.updateHistories(historiesData));
     } catch (error) {
       console.log(error);
 

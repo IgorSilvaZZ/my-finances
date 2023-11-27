@@ -38,14 +38,11 @@ const slice = createSlice({
     updateBalance(state, { payload }): void {
       state.balance = payload.balance;
     },
-    changeUserInfos(
-      state,
-      { payload }: PayloadAction<IChangeUserInfosPayload>
-    ) {
-      state = {
-        ...state,
-        [payload.field]: payload.value,
-      };
+    updateHistories(state, { payload }): void {
+      state.histories = payload
+    },
+    updateCategories(state, { payload }): void {
+      state.categories = payload;
     },
     clearStateUser(state): void {
       state.id = "";
