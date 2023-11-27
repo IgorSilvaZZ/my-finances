@@ -1,3 +1,6 @@
+import { ICategoriesUser } from "@/interfaces/ICategoriesUser.interface";
+import { IHistories } from "@/interfaces/IHistories.interface";
+
 export interface IUserState {
   id: string;
   name: string;
@@ -6,6 +9,8 @@ export interface IUserState {
   balance: number;
   avatarUrl: string;
   token: string | null;
+  histories: IHistories | [];
+  categories: ICategoriesUser | [];
 }
 
 export interface IUserPayload {
@@ -16,6 +21,13 @@ export interface IUserPayload {
     password: string;
     balance: number;
     avatarUrl: string;
+    histories: IHistories;
+    categories: ICategoriesUser;
   };
   token: string;
+}
+
+export interface IChangeUserInfosPayload {
+  field: string;
+  value: string | number | IHistories | ICategoriesUser;
 }

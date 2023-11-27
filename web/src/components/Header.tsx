@@ -5,21 +5,24 @@ import numeral from "numeral";
 import dayjs from "dayjs";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 
+import { ICategoriesUser } from "@/interfaces/ICategoriesUser.interface";
+import { IParamsHistoricList } from "@/interfaces/IParamsHistoricList.interface";
+
 import { selectUser } from "@/store/users/user.slice";
 import { filtersAction, selectFilters } from "@/store/filters/filters.slice";
 
-import { ICategoriesUser, IParamsHistoricList } from "@/pages/home";
 import { months, getYears, currentYear } from "@/utils/headerHome";
 interface IHeaderProps {
-  categoriesUser: ICategoriesUser[];
   getHistories(params: IParamsHistoricList): Promise<void>;
 }
 
-export const Header = ({ categoriesUser, getHistories }: IHeaderProps) => {
+export const Header = ({ getHistories }: IHeaderProps) => {
   const dispatch = useDispatch();
 
   const user = useSelector(selectUser);
   const filters = useSelector(selectFilters);
+
+  const categories = user.categories as ICategoriesUser[] | [];
 
   const years = getYears();
 
@@ -30,7 +33,7 @@ export const Header = ({ categoriesUser, getHistories }: IHeaderProps) => {
 
   const listCategoriesUser = [
     { id: "all", description: "Todos" },
-    ...categoriesUser,
+    ...categories,
   ];
 
   async function getSearch(event: React.FormEvent<HTMLFormElement>) {

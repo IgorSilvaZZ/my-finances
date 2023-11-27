@@ -1,45 +1,21 @@
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import ReactLoading from "react-loading";
+
+import { IHistories } from "@/interfaces/IHistories.interface";
+import { IParamsHistoricList } from "@/interfaces/IParamsHistoricList.interface";
 
 import { CardHistory } from "@/components/CardHistory";
 import { NavBar } from "@/components/NavBar";
 import { Header } from "@/components/Header";
 
-import { selectUser } from "../../store/users/user.slice";
+import { selectUser, usersActions } from "../../store/users/user.slice";
 import { selectFilters } from "../../store/filters/filters.slice";
 
 import { api } from "../../lib/axios";
 import { ModalCreateHistory } from "@/components/ModalCreateHistory";
 import { currentYear } from "@/utils/headerHome";
-
-export interface IHistories {
-  id: string;
-  description: string;
-  value: number;
-  type: string;
-  isExit: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: string;
-}
-
-export interface ICategoriesUser {
-  id: string;
-  description: string;
-  icon: string;
-  userId: string;
-  createdAt: Date;
-  updateAt: Date;
-}
-
-export interface IParamsHistoricList {
-  description?: string;
-  categoryId?: string;
-  year: string;
-  mouth?: string;
-}
 
 type TypeFiltersSearch = {
   description?: string;
@@ -49,11 +25,13 @@ type TypeFiltersSearch = {
 };
 
 export default function Home() {
+  const dispatch = useDispatch();
+
   const user = useSelector(selectUser);
   const filters = useSelector(selectFilters);
 
-  const [histories, setHistories] = useState<IHistories[]>([]);
-  const [categoriesUser, setCategoriesUser] = useState<ICategoriesUser[]>([]);
+  const histories = user.histories as IHistories[] | [];
+
   const [loading, setLoading] = useState<boolean>(false);
 
   const headers = {
@@ -66,7 +44,7 @@ export default function Home() {
         headers,
       });
 
-      setCategoriesUser(data);
+      dispatch(usersActions.updateCategories(data));
     } catch (error) {
       toast.error("Erro ao listar suas categorias! Tente novamente!");
     }
@@ -91,12 +69,12 @@ export default function Home() {
         }
       });
 
-      const { data: histories } = await api.get("/historic", {
+      const { data: historiesData } = await api.get("/historic", {
         headers,
         params: validParams,
       });
 
-      setHistories(histories);
+      dispatch(usersActions.updateHistories(historiesData));
     } catch (error) {
       console.log(error);
 
@@ -106,28 +84,17 @@ export default function Home() {
     }
   }
 
-  async function getInfosUser() {
-    const requests = [getCategoriesUser(), getHistories(filters)];
-
-    await Promise.all(requests);
-  }
-
-  useEffect(() => {
-    getInfosUser();
-  }, []);
-
   return (
     <div className='h-screen w-full'>
       <NavBar />
 
       <main className='flex flex-col items-center gap-4 mx-auto max-w-[1100px] mt-5'>
-        <Header categoriesUser={categoriesUser} getHistories={getHistories} />
+        <Header getHistories={getHistories} />
 
         <div className='flex flex-col items-center gap-2 w-full h-80 overflow-x-hidden bg-zinc-800 rounded-lg'>
           <div className='flex w-full h-5 items-center justify-between text-sm font-semibold px-4 mt-2'>
             <p className='text-zinc-500'>Historico de Transações</p>
             <ModalCreateHistory
-              categoriesUser={categoriesUser}
               getHistories={getHistories}
               getCategoriesUser={getCategoriesUser}
             />
@@ -139,7 +106,13 @@ export default function Home() {
                 {histories.length > 0 ? (
                   <>
                     {histories?.map(
-                      ({ id, description, isExit, value, createdAt }) => (
+                      ({
+                        id,
+                        description,
+                        isExit,
+                        value,
+                        createdAt,
+                      }: IHistories) => (
                         <CardHistory
                           id={id}
                           key={id}

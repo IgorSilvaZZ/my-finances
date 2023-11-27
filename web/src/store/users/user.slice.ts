@@ -1,7 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 
-import { IUserState, IUserPayload } from "./types/user.types";
+import {
+  IUserState,
+  IUserPayload,
+  IChangeUserInfosPayload,
+} from "./types/user.types";
 import { AppState } from "..";
 
 const initialState: IUserState = {
@@ -12,6 +16,8 @@ const initialState: IUserState = {
   balance: 0,
   avatarUrl: "",
   token: "",
+  histories: [],
+  categories: [],
 };
 
 const slice = createSlice({
@@ -26,9 +32,17 @@ const slice = createSlice({
       state.avatarUrl = payload.user.avatarUrl;
       state.balance = payload.user.balance;
       state.token = payload.token;
+      state.histories = payload.user.histories;
+      state.categories = payload.user.categories;
     },
     updateBalance(state, { payload }): void {
       state.balance = payload.balance;
+    },
+    updateHistories(state, { payload }): void {
+      state.histories = payload
+    },
+    updateCategories(state, { payload }): void {
+      state.categories = payload;
     },
     clearStateUser(state): void {
       state.id = "";
@@ -38,6 +52,8 @@ const slice = createSlice({
       state.avatarUrl = "";
       state.balance = 0;
       state.token = "";
+      state.histories = [];
+      state.categories = [];
     },
   },
   extraReducers: {

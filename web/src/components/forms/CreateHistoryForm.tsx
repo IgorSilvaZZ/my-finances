@@ -5,11 +5,13 @@ import { INewHistory } from "../ModalCreateHistory";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import * as Checkbox from "@radix-ui/react-checkbox";
 import { Check, Question } from "@phosphor-icons/react";
-import { ICategoriesUser } from "@/pages/home";
+import { useSelector } from "react-redux";
+
+import { selectUser } from "@/store/users/user.slice";
+import { ICategoriesUser } from "@/interfaces/ICategoriesUser.interface";
 
 interface CreateHistoryFormProps {
   formNewHistory: INewHistory;
-  categoriesUser: ICategoriesUser[];
   setViewCreateCategory: (isView: boolean) => void;
   handleFormHistory: (
     event:
@@ -22,12 +24,15 @@ interface CreateHistoryFormProps {
 
 export const CreateHistoryForm = ({
   formNewHistory,
-  categoriesUser,
   setViewCreateCategory,
   handleFormHistory,
   setFormNewHistory,
   handleSubmit,
 }: CreateHistoryFormProps) => {
+  const user = useSelector(selectUser);
+
+  const categories = user.categories as ICategoriesUser[] | [];
+
   return (
     <form className='w-full flex flex-col mt-6' onSubmit={handleSubmit}>
       <label
@@ -81,7 +86,7 @@ export const CreateHistoryForm = ({
         className='p-2 rounded-lg bg-zinc-800 text-white outline-none border-2 border-zinc-800 mt-4'
         onChange={handleFormHistory}
       >
-        {categoriesUser.map(({ description, id }) => (
+        {categories.map(({ description, id }) => (
           <option key={id} value={id}>
             {description}
           </option>
