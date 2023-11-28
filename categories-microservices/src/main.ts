@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions } from '@nestjs/microservices'; // npm i @nestjs/microservices@9.4.3
+import { MicroserviceOptions } from '@nestjs/microservices';
 import { Transport } from '@nestjs/microservices/enums';
 
 import { AppModule } from './app.module';
@@ -11,11 +11,11 @@ async function bootstrap() {
       transport: Transport.KAFKA,
       options: {
         client: {
-          clientId: 'histories',
+          clientId: 'categories',
           brokers: ['localhost:9092'],
         },
         consumer: {
-          groupId: 'histories-consumer',
+          groupId: 'categories-consumer',
         },
       },
     },
