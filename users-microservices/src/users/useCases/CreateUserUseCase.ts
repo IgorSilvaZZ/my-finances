@@ -33,7 +33,7 @@ export class CreateUserUseCase {
 
     // Pegar do consumer do categories
     const category = this.categoriesClient.emit(
-      'create-categories',
+      'create-category',
       JSON.stringify({
         description: 'Outros',
         icon: 'Other',
