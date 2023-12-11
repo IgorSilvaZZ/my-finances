@@ -1,5 +1,6 @@
 import {
   Controller,
+  Inject,
   Body,
   Post,
   Patch,
@@ -7,28 +8,19 @@ import {
   Request,
 } from '@nestjs/common';
 
-import { CreateUserUseCase } from './useCases/CreateUserUseCase';
 import { CreateUserDTO } from './dtos/CreateUserDTO';
-import { AuthenticateUserDTO } from './dtos/AuthenticateUserDTO';
-import { AuthenticateUserUseCase } from './useCases/AuthenticateUserUseCase';
-import { AuthGuard } from '../guards/auth.guard';
-import { UpdateBalanceUseCase } from './useCases/UpdateBalanceUseCase';
-import { UpdateBalanceDTO } from './dtos/UpdateBalanceDTO';
+import { CreateUserUseCase } from './useCases/CreateUserUseCase';
 
 @Controller('/users')
 export class UsersController {
-  constructor(
-    private readonly createUserUseCase: CreateUserUseCase,
-    private readonly authenticateUserUseCase: AuthenticateUserUseCase,
-    private readonly updateBalanceUseCase: UpdateBalanceUseCase,
-  ) {}
+  constructor(private createUserUseCase: CreateUserUseCase) {}
 
   @Post('/')
   async createUser(@Body() createUserDTO: CreateUserDTO) {
-    const { user } = await this.createUserUseCase.execute(createUserDTO);
-
-    return user;
+    this.createUserUseCase.execute(createUserDTO);
   }
+
+  /*
 
   @Post('/login')
   async authenticate(@Body() authenticateUserDTO: AuthenticateUserDTO) {
@@ -53,5 +45,5 @@ export class UsersController {
     return {
       balance: updatedBalance,
     };
-  }
+  } */
 }

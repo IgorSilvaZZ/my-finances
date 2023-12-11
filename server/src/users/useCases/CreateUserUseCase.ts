@@ -1,44 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common/exceptions';
-import { hash } from 'bcrypt';
+import { ClientKafka } from '@nestjs/microservices';
 
 import { CreateUserDTO } from '../dtos/CreateUserDTO';
-import { UsersRepository } from '../repositories/UsersRepository';
-import { CategoryRepository } from '../../categories/repositories/CategoryRepository';
 
 @Injectable()
 export class CreateUserUseCase {
   constructor(
-    private usersRepository: UsersRepository,
-    private categoryRepository: CategoryRepository,
+    @Inject('USERS_MICROSERVICE') private readonly userClient: ClientKafka,
   ) {}
 
   async execute({ name, email, password, avatarUrl }: CreateUserDTO) {
-    const userAlreadyExists = await this.usersRepository.findByEmail(email);
-
-    if (userAlreadyExists) {
-      throw new BadRequestException('User already Exists!');
-    }
-
-    const passwordCrypt = await hash(password, 10);
-
-    const user = await this.usersRepository.create({
-      name,
-      email,
-      balance: 0,
-      password: passwordCrypt,
-      avatarUrl,
-    });
-
-    const category = await this.categoryRepository.create({
-      description: 'Outros',
-      icon: 'Other',
-      userId: user.id,
-    });
-
-    return {
-      user,
-      category,
-    };
+    this.userClient.emit(
+      'create-user',
+      JSON.stringify({ name, email, password, avatarUrl }),
+    );
   }
 }

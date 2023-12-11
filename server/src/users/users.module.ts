@@ -1,16 +1,31 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 import { UsersController } from './users.controller';
 import { CreateUserUseCase } from './useCases/CreateUserUseCase';
-import { DatabaseModule } from 'src/database/database.module';
 import { jwtConstants } from './constants/auth.constant';
-import { AuthenticateUserUseCase } from './useCases/AuthenticateUserUseCase';
-import { UpdateBalanceUseCase } from './useCases/UpdateBalanceUseCase';
+/* import { AuthenticateUserUseCase } from './useCases/AuthenticateUserUseCase';
+import { UpdateBalanceUseCase } from './useCases/UpdateBalanceUseCase'; */
 
 @Module({
   imports: [
-    DatabaseModule,
+    ClientsModule.register([
+      {
+        name: 'USERS_MICROSERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'users',
+            brokers: ['localhost:9092'],
+          },
+          producerOnlyMode: true,
+          consumer: {
+            groupId: 'users-consumer',
+          },
+        },
+      },
+    ]),
     JwtModule.register({
       global: jwtConstants.options.global,
       secret: jwtConstants.options.secret,
@@ -18,6 +33,8 @@ import { UpdateBalanceUseCase } from './useCases/UpdateBalanceUseCase';
     }),
   ],
   controllers: [UsersController],
-  providers: [CreateUserUseCase, AuthenticateUserUseCase, UpdateBalanceUseCase],
+  providers: [
+    CreateUserUseCase /* AuthenticateUserUseCase, UpdateBalanceUseCase */,
+  ],
 })
 export class UsersModule {}
