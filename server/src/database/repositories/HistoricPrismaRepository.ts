@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { Historic as HistoricPrisma } from '@prisma/client';
-import dayjs from 'dayjs';
 
 import { CreateHistoricDTO } from '../../historic/dtos/CreateHistoricDTO';
 import { HistoricRepository } from '../../historic/repositories/HistoricRepository';
