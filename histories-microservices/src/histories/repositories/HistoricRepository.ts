@@ -13,4 +13,5 @@ export abstract class HistoricRepository {
     year,
   }: IListHistoricDTO): Promise<HistoricPrisma[]>;
   abstract findById(id: string): Promise<HistoricPrisma>;
+  abstract listByUserId(userId: string): Promise<HistoricPrisma[]>;
 }

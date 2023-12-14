@@ -1,23 +1,23 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { compare } from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
 
 import { AuthenticateUserDTO } from '../dtos/AuthenticateUserDTO';
-import { UsersRepository } from '../repositories/UsersRepository';
-import { HistoricRepository } from '../../historic/repositories/HistoricRepository';
-import { CategoryRepository } from '../../categories/repositories/CategoryRepository';
 
 @Injectable()
 export class AuthenticateUserUseCase {
   constructor(
-    private usersRepository: UsersRepository,
-    private historiesRepository: HistoricRepository,
-    private categoriesRepository: CategoryRepository,
-    private jwtService: JwtService,
+    @Inject('USERS_MICROSERVICE') private readonly userClient: ClientKafka,
   ) {}
 
   async execute({ email, password }: AuthenticateUserDTO) {
-    const userExists = await this.usersRepository.findByEmail(email);
+    const { token } = this.userClient.emit(
+      'authenticate-user',
+      JSON.stringify({ email, password }),
+    ) as any;
+
+    return { token };
+
+    /*  const userExists = await this.usersRepository.findByEmail(email);
 
     if (!userExists) {
       throw new UnauthorizedException('Email/Password Incorrect');
@@ -44,6 +44,6 @@ export class AuthenticateUserUseCase {
       categories,
     };
 
-    return { user, token };
+    return { user, token }; */
   }
 }

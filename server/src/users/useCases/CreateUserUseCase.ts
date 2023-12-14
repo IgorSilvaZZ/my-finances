@@ -1,5 +1,4 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { BadRequestException } from '@nestjs/common/exceptions';
 import { ClientKafka } from '@nestjs/microservices';
 
 import { CreateUserDTO } from '../dtos/CreateUserDTO';
