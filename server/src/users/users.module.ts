@@ -5,8 +5,8 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { UsersController } from './users.controller';
 import { CreateUserUseCase } from './useCases/CreateUserUseCase';
 import { jwtConstants } from './constants/auth.constant';
-/* import { AuthenticateUserUseCase } from './useCases/AuthenticateUserUseCase';
-import { UpdateBalanceUseCase } from './useCases/UpdateBalanceUseCase'; */
+import { AuthenticateUserUseCase } from './useCases/AuthenticateUserUseCase';
+/* import { UpdateBalanceUseCase } from './useCases/UpdateBalanceUseCase'; */
 
 @Module({
   imports: [
@@ -33,8 +33,6 @@ import { UpdateBalanceUseCase } from './useCases/UpdateBalanceUseCase'; */
     }),
   ],
   controllers: [UsersController],
-  providers: [
-    CreateUserUseCase /* AuthenticateUserUseCase, UpdateBalanceUseCase */,
-  ],
+  providers: [CreateUserUseCase, AuthenticateUserUseCase],
 })
 export class UsersModule {}

@@ -1,37 +1,32 @@
-import {
-  Controller,
-  Inject,
-  Body,
-  Post,
-  Patch,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
+import { Controller, Body, Post } from '@nestjs/common';
 
 import { CreateUserDTO } from './dtos/CreateUserDTO';
 import { CreateUserUseCase } from './useCases/CreateUserUseCase';
+import { AuthenticateUserDTO } from './dtos/AuthenticateUserDTO';
+import { AuthenticateUserUseCase } from './useCases/AuthenticateUserUseCase';
 
 @Controller('/users')
 export class UsersController {
-  constructor(private createUserUseCase: CreateUserUseCase) {}
+  constructor(
+    private createUserUseCase: CreateUserUseCase,
+    private authenticateUserUseCase: AuthenticateUserUseCase,
+  ) {}
 
   @Post('/')
   async createUser(@Body() createUserDTO: CreateUserDTO) {
     this.createUserUseCase.execute(createUserDTO);
   }
 
-  /*
-
-  @Post('/login')
+  @Post('/auth')
   async authenticate(@Body() authenticateUserDTO: AuthenticateUserDTO) {
-    const { user, token } = await this.authenticateUserUseCase.execute(
+    const result = await this.authenticateUserUseCase.execute(
       authenticateUserDTO,
     );
 
-    return { user, token };
+    return result;
   }
 
-  @UseGuards(AuthGuard)
+  /* @UseGuards(AuthGuard)
   @Patch('/updateBalance')
   async updateBalance(
     @Request() request,
