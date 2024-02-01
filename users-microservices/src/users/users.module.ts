@@ -31,6 +31,20 @@ import { jwtConstants } from './constants/auth.constant';
           },
         },
       },
+      {
+        name: 'HISTORIES_MICROSERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'histories',
+            brokers: ['localhost:9092'],
+          },
+          producerOnlyMode: true,
+          consumer: {
+            groupId: 'histories-consumer',
+          },
+        },
+      },
     ]),
   ],
   controllers: [UserControler],

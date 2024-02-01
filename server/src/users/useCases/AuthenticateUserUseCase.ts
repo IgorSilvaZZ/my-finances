@@ -3,10 +3,6 @@ import { ClientKafka } from '@nestjs/microservices';
 
 import { AuthenticateUserDTO } from '../dtos/AuthenticateUserDTO';
 import { lastValueFrom } from 'rxjs';
-
-type AuthResponse = {
-  token: string;
-};
 @Injectable()
 export class AuthenticateUserUseCase {
   constructor(

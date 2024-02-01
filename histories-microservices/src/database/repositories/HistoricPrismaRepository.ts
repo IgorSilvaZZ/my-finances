@@ -10,7 +10,6 @@ import { IListHistoricDTO } from 'src/histories/dtos/ListHistoricDTO';
 @Injectable()
 export class HistoricPrismaRepository implements HistoricRepository {
   constructor(private prismaService: PrismaService) {}
-
   async list({
     userId,
     categoryId,
@@ -57,6 +56,14 @@ export class HistoricPrismaRepository implements HistoricRepository {
     });
 
     return historicList;
+  }
+
+  async listByUserId(userId: string): Promise<HistoricPrisma[]> {
+    const historiesUser = await this.prismaService.historic.findMany({
+      where: { userId },
+    });
+
+    return historiesUser;
   }
 
   async create(
