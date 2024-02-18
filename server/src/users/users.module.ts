@@ -19,7 +19,6 @@ import { AuthenticateUserUseCase } from './useCases/AuthenticateUserUseCase';
             clientId: 'users',
             brokers: ['localhost:9092'],
           },
-          producerOnlyMode: true,
           consumer: {
             groupId: 'users-consumer',
           },
